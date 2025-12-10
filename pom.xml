@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.medbox</groupId>
-    <artifactId>MexBoxBackend</artifactId>
+    <artifactId>MedBoxBackend</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>MexBoxBackend</name>
-    <description>MexBoxBackend</description>
+    <name>MedBoxBackend</name>
+    <description>MedBoxBackend</description>
     <url/>
     <licenses>
         <license/>

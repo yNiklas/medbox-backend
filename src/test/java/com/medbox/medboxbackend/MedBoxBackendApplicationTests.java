@@ -1,10 +1,10 @@
-package com.medbox.mexboxbackend;
+package com.medbox.medboxbackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MexBoxBackendApplicationTests {
+class MedBoxBackendApplicationTests {
 
     @Test
     void contextLoads() {

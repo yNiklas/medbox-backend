@@ -1,4 +1,4 @@
-package com.medbox.mexboxbackend.model;
+package com.medbox.medboxbackend.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

@@ -1,13 +1,13 @@
-package com.medbox.mexboxbackend;
+package com.medbox.medboxbackend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class MexBoxBackendApplication {
+public class MedBoxBackendApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MexBoxBackendApplication.class, args);
+        SpringApplication.run(MedBoxBackendApplication.class, args);
     }
 
 }

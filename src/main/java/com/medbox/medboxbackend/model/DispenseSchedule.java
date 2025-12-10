@@ -1,23 +1,27 @@
-package com.medbox.mexboxbackend.model;
+package com.medbox.medboxbackend.model;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @Getter
-public class MedBoxStack {
+@NoArgsConstructor
+public class DispenseSchedule {
     @Id
-    private Long id;
+    private String id;
 
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MedBox> boxes;
+    private List<DispenseInterval> intervals;
 
-    private String userId;
+    public DispenseSchedule(String name) {
+        this.name = name;
+    }
 }
