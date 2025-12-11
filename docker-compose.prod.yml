@@ -48,6 +48,9 @@ services:
       SPRING_DATASOURCE_USERNAME: appuser
       SPRING_DATASOURCE_PASSWORD: apppass
       KEYCLOAK_HOST: https://medbox-auth.juliany.de
+    labels:
+      - "traefik.http.routers.medboxbackend.rule=Host(`medbox-api.juliany.de`)"
+      - "traefik.enable=true"
     ports:
       - "8081:8081"
     networks:
