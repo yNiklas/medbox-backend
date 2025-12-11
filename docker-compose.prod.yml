@@ -13,6 +13,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql
       - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - medbox-net
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.4
@@ -31,6 +33,8 @@ services:
     labels:
       - "traefik.http.routers.keycloak.rule=Host(`auth.medbox.juliany.de`)"
       - "traefik.enable=true"
+    networks:
+        - medbox-net
     depends_on:
       - postgres
 
@@ -45,6 +49,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: apppass
     ports:
       - "8081:8081"
+    networks:
+        - medbox-net
     depends_on:
       - postgres
       - keycloak
@@ -54,6 +60,8 @@ services:
       context: ../medbox-app
       dockerfile: Dockerfile
     container_name: medbox_frontend
+    networks:
+     - medbox-net
     ports:
       - "4200:80"
     depends_on:
@@ -61,3 +69,6 @@ services:
 
 volumes:
   postgres_data:
+
+networks:
+  medbox-net:
