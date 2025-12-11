@@ -1,0 +1,63 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:18
+    container_name: medbox_postgres
+    environment:
+      POSTGRES_DB: keycloakdb
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: keycloakpass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./init-scripts:/docker-entrypoint-initdb.d
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.4
+    container_name: medbox_keycloak
+    command: start-dev
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloakdb
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: keycloakpass
+      KC_HOSTNAME: localhost
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - "8080:8080"
+    labels:
+      - "traefik.http.routers.keycloak.rule=Host(`auth.medbox.juliany.de`)"
+      - "traefik.enable=true"
+    depends_on:
+      - postgres
+
+  backend:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: medbox_backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/appdb
+      SPRING_DATASOURCE_USERNAME: appuser
+      SPRING_DATASOURCE_PASSWORD: apppass
+    ports:
+      - "8081:8081"
+    depends_on:
+      - postgres
+      - keycloak
+
+  frontend:
+    build:
+      context: ../medbox-app
+      dockerfile: Dockerfile
+    container_name: medbox_frontend
+    ports:
+      - "4200:80"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:
