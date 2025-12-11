@@ -1,6 +1,7 @@
 package com.medbox.medboxbackend.stacks;
 
 import com.medbox.medboxbackend.model.MedBoxStack;
+import com.medbox.medboxbackend.stacks.requests.AssignMedBoxStackRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,10 +25,9 @@ public class MedBoxStacksController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public void assignMedBoxStackByMasterMACAddress(@RequestParam String masterMACAddress,
-                                                    @RequestParam String boxName,
-                                                    @RequestParam String stackName,
+    public void assignMedBoxStackByMasterMACAddress(@RequestBody AssignMedBoxStackRequest request,
                                                     Principal principal) {
-        medBoxStackService.assignMedBoxStackByMasterMACAddress(masterMACAddress, boxName, stackName, principal);
+        medBoxStackService.assignMedBoxStackByMasterMACAddress(request.masterMACAddress(),
+                request.boxName(), request.stackName(), principal);
     }
 }
