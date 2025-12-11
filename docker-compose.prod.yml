@@ -31,7 +31,7 @@ services:
     ports:
       - "8080:8080"
     labels:
-      - "traefik.http.routers.keycloak.rule=Host(`auth.medbox.juliany.de`)"
+      - "traefik.http.routers.keycloak.rule=Host(`medbox-auth.juliany.de`)"
       - "traefik.enable=true"
     networks:
         - medbox-net
@@ -47,7 +47,7 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/appdb
       SPRING_DATASOURCE_USERNAME: appuser
       SPRING_DATASOURCE_PASSWORD: apppass
-      KEYCLOAK_HOST: https://auth.medbox.juliany.de
+      KEYCLOAK_HOST: https://medbox-auth.juliany.de
     ports:
       - "8081:8081"
     networks:
