@@ -1,9 +1,6 @@
 package com.medbox.medboxbackend.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -13,7 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class DispenseSchedule {
-    @Id
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private String id;
 
     private String name;

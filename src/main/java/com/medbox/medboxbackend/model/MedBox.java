@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class MedBox {
-    @Id
+    @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private String id;
 
     private String mac;
