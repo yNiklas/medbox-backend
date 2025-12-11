@@ -16,4 +16,6 @@ public interface MedBoxStackRepository extends CrudRepository<MedBoxStack, Long>
     Optional<MedBoxStack> findMedBoxStackByMedBoxMACAddress(String medBoxMACAddress);
 
     Optional<MedBoxStack> findByNameAndUserId(String name, String userId);
+
+    Optional<MedBoxStack> findByIdAndUserId(Long id, String userId);
 }

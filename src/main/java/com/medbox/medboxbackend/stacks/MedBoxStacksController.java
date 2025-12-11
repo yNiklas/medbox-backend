@@ -30,4 +30,10 @@ public class MedBoxStacksController {
         medBoxStackService.assignMedBoxStackByMasterMACAddress(request.masterMACAddress(),
                 request.boxName(), request.stackName(), principal);
     }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/{id}")
+    public MedBoxStack getMedBoxStackById(@PathVariable Long id, Principal principal) {
+        return medBoxStackService.getMedBoxStackByIdAndUserId(id, principal.getName());
+    }
 }

@@ -37,4 +37,9 @@ public class MedBoxStackService {
         MedBoxStack stack = new MedBoxStack(stackName, masterBox, principal.getName());
         medBoxStackRepository.save(stack);
     }
+
+    public MedBoxStack getMedBoxStackByIdAndUserId(Long id, String userId) {
+        return medBoxStackRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new IllegalArgumentException("MedBoxStack with id " + id + " not found for user " + userId));
+    }
 }
