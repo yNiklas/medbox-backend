@@ -3,7 +3,7 @@ version: '3.8'
 services:
   postgres:
     image: postgres:18
-    container_name: postgres
+    container_name: medbox_postgres
     environment:
       POSTGRES_DB: keycloakdb
       POSTGRES_USER: keycloak
@@ -16,7 +16,7 @@ services:
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.4
-    container_name: keycloak
+    container_name: medbox_keycloak
     command: start-dev
     environment:
       KC_DB: postgres
