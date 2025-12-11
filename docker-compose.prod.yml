@@ -61,10 +61,8 @@ services:
         - medbox-net
     restart: always
     depends_on:
-      postgres:
-        condition: service_started
-      keycloak:
-        condition: service_healthy
+      - postgres
+      - keycloak
 
 
   frontend:
