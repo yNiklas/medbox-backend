@@ -28,6 +28,9 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
     ports:
       - "8080:8080"
+    labels:
+      - "traefik.http.routers.keycloak.rule=Host(`auth.medbox.juliany.de`)"
+      - "traefik.enable=true"
     depends_on:
       - postgres
 
