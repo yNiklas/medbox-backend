@@ -682,10 +682,12 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "redirectUris": [
-        "http://localhost:4200/*"
+        "http://localhost:4200/*",
+        "https://medbox.juliany.de/*"
       ],
       "webOrigins": [
-        "http://localhost:4200"
+        "http://localhost:4200",
+        "https://medbox.juliany.de"
       ],
       "notBefore": 0,
       "bearerOnly": false,
@@ -739,7 +741,8 @@
       "clientAuthenticatorType": "client-secret",
       "secret": "7UNBwLA6udhAFLjLuUx6GBxTqK7PA2eN",
       "redirectUris": [
-        "http://localhost:8081/*"
+        "http://localhost:8081/*",
+        "https://medbox-api.juliany.de/*"
       ],
       "webOrigins": [
         "+"

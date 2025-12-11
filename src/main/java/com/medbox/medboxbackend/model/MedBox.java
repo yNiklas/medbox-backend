@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class MedBox {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     private String mac;
     private String name;

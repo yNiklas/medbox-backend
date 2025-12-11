@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class DispenseInterval {
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     private Long interval;
     private Long startTime;

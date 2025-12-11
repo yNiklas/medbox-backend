@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 public class MedBoxStatus {
     @Id @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private String id;
+    private Long id;
 
     private Long lastSeenAt; // UTC timestamp in milliseconds
     private String error; // potential error message
