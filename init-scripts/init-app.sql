@@ -7,5 +7,3 @@ CREATE USER appuser WITH ENCRYPTED PASSWORD 'apppass';
 -- Grant privileges
 GRANT ALL PRIVILEGES ON DATABASE appdb TO appuser;
 
-CREATE SCHEMA medbox AUTHORIZATION appuser;
-
