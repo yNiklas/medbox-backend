@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import java.security.Principal;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MedBoxStackService {
@@ -21,7 +22,7 @@ public class MedBoxStackService {
         return medBoxStackRepository.findAllByUserId(principal.getName());
     }
 
-    public void assignMedBoxStackByMasterMACAddress(String masterMACAddress, String boxName, String stackName, Principal principal) {
+    public MedBoxStack assignMedBoxStackByMasterMACAddress(String masterMACAddress, String boxName, String stackName, Principal principal) {
         // Check if MedBox is already assigned
         if (medBoxStackRepository.findMedBoxStackByMedBoxMACAddress(masterMACAddress).isPresent()) {
             throw new IllegalArgumentException("MedBox with MAC address " + masterMACAddress + " is already assigned.");
@@ -35,11 +36,19 @@ public class MedBoxStackService {
         // Create new box and stack
         MedBox masterBox = new MedBox(masterMACAddress, boxName);
         MedBoxStack stack = new MedBoxStack(stackName, masterBox, principal.getName());
-        medBoxStackRepository.save(stack);
+        return medBoxStackRepository.save(stack);
     }
 
-    public MedBoxStack getMedBoxStackByIdAndUserId(Long id, String userId) {
-        return medBoxStackRepository.findByIdAndUserId(id, userId)
-                .orElseThrow(() -> new IllegalArgumentException("MedBoxStack with id " + id + " not found for user " + userId));
+    public Optional<MedBoxStack> getMedBoxStackByIdAndUserId(Long id, String userId) {
+        return medBoxStackRepository.findByIdAndUserId(id, userId);
+    }
+
+    public void deleteMedBoxStackById(Long id, String userId) {
+        Optional<MedBoxStack> stackOpt = medBoxStackRepository.findByIdAndUserId(id, userId);
+        if (stackOpt.isEmpty()) {
+            throw new IllegalArgumentException("MedBoxStack with id " + id + " not found for user " + userId);
+        } else {
+            medBoxStackRepository.delete(stackOpt.get());
+        }
     }
 }

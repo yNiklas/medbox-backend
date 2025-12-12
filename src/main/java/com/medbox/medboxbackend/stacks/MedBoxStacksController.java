@@ -1,5 +1,6 @@
 package com.medbox.medboxbackend.stacks;
 
+import com.medbox.medboxbackend.exceptions.NoSuchResourceException;
 import com.medbox.medboxbackend.model.MedBoxStack;
 import com.medbox.medboxbackend.stacks.requests.AssignMedBoxStackRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,15 +26,22 @@ public class MedBoxStacksController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public void assignMedBoxStackByMasterMACAddress(@RequestBody AssignMedBoxStackRequest request,
+    public MedBoxStack assignMedBoxStackByMasterMACAddress(@RequestBody AssignMedBoxStackRequest request,
                                                     Principal principal) {
-        medBoxStackService.assignMedBoxStackByMasterMACAddress(request.masterMACAddress(),
+        return medBoxStackService.assignMedBoxStackByMasterMACAddress(request.masterMACAddress(),
                 request.boxName(), request.stackName(), principal);
     }
 
     @PreAuthorize("isAuthenticated()")
     @GetMapping("/{id}")
     public MedBoxStack getMedBoxStackById(@PathVariable Long id, Principal principal) {
-        return medBoxStackService.getMedBoxStackByIdAndUserId(id, principal.getName());
+        return medBoxStackService.getMedBoxStackByIdAndUserId(id, principal.getName())
+                .orElseThrow(() -> new NoSuchResourceException("MedBoxStack with id " + id + " not found for user " + principal.getName()));
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @DeleteMapping("/{id}")
+    public void deleteMedBoxStackById(@PathVariable Long id, Principal principal) {
+        medBoxStackService.deleteMedBoxStackById(id, principal.getName());
     }
 }
