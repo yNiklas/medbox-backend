@@ -3,6 +3,7 @@ package com.medbox.medboxbackend.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.List;
 
@@ -14,22 +15,24 @@ public class MedBox {
     private Long id;
 
     private String mac;
+
+    @Setter
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private MedBoxStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<DispenseSchedule> compartments;
+    private List<Compartment> compartments;
 
     public MedBox(String mac, String name) {
         this.mac = mac;
         this.name = name;
         this.compartments = List.of(
-                new DispenseSchedule("Compartment 1"),
-                new DispenseSchedule("Compartment 2"),
-                new DispenseSchedule("Compartment 3"),
-                new DispenseSchedule("Compartment 4")
+                new Compartment("Compartment 1"),
+                new Compartment("Compartment 2"),
+                new Compartment("Compartment 3"),
+                new Compartment("Compartment 4")
         );
     }
 }

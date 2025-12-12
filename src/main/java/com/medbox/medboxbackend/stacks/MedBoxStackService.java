@@ -22,25 +22,42 @@ public class MedBoxStackService {
         return medBoxStackRepository.findAllByUserId(principal.getName());
     }
 
-    public MedBoxStack assignMedBoxStackByMasterMACAddress(String masterMACAddress, String boxName, String stackName, Principal principal) {
+    public MedBoxStack assignMedBoxStackByMasterMACAddress(String masterMACAddress, String boxName, String stackName, String userId) {
         // Check if MedBox is already assigned
         if (medBoxStackRepository.findMedBoxStackByMedBoxMACAddress(masterMACAddress).isPresent()) {
             throw new IllegalArgumentException("MedBox with MAC address " + masterMACAddress + " is already assigned.");
         }
 
         // Check if name is already used
-        if (medBoxStackRepository.findByNameAndUserId(stackName, principal.getName()).isPresent()) {
+        if (medBoxStackRepository.findByNameAndUserId(stackName, userId).isPresent()) {
             throw new IllegalArgumentException("Stack with name " + stackName + " already exists.");
         }
 
         // Create new box and stack
         MedBox masterBox = new MedBox(masterMACAddress, boxName);
-        MedBoxStack stack = new MedBoxStack(stackName, masterBox, principal.getName());
+        MedBoxStack stack = new MedBoxStack(stackName, masterBox, userId);
         return medBoxStackRepository.save(stack);
     }
 
     public Optional<MedBoxStack> getMedBoxStackByIdAndUserId(Long id, String userId) {
         return medBoxStackRepository.findByIdAndUserId(id, userId);
+    }
+
+    public MedBoxStack renameMedBoxStack(Long id, String newName, String userId) {
+        Optional<MedBoxStack> stackOpt = medBoxStackRepository.findByIdAndUserId(id, userId);
+        if (stackOpt.isEmpty()) {
+            throw new IllegalArgumentException("MedBoxStack with id " + id + " not found for user " + userId);
+        }
+
+        // Check if new name is already used
+        if (medBoxStackRepository.findByNameAndUserId(newName, userId).isPresent()) {
+            throw new IllegalArgumentException("Stack with name " + newName + " already exists.");
+        }
+
+        MedBoxStack stack = stackOpt.get();
+        stack.setName(newName);
+
+        return medBoxStackRepository.save(stack);
     }
 
     public void deleteMedBoxStackById(Long id, String userId) {
