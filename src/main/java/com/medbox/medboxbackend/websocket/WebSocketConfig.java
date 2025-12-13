@@ -1,0 +1,24 @@
+package com.medbox.medboxbackend.websocket;
+
+import com.medbox.medboxbackend.websocket.handler.DeviceWebSocketHandler;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+
+@Configuration
+@EnableWebSocket
+public class WebSocketConfig implements WebSocketConfigurer {
+
+    private final DeviceWebSocketHandler deviceWebSocketHandler;
+
+    public WebSocketConfig(DeviceWebSocketHandler deviceWebSocketHandler) {
+        this.deviceWebSocketHandler = deviceWebSocketHandler;
+    }
+
+    @Override
+    public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        registry.addHandler(deviceWebSocketHandler, "/device/{id}")
+                .setAllowedOrigins("http://localhost:4200", "https://medbox.juliany.de");
+    }
+}
