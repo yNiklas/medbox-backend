@@ -11,6 +11,7 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -192,8 +193,7 @@ class DeviceWebSocketIntegrationTest {
         ServerMessage serverMessage = objectMapper.readValue(json, ServerMessage.class);
         assertEquals(3, serverMessage.getMessageType());
         
-        @SuppressWarnings("unchecked")
-        Map<String, Object> dispenseData = objectMapper.convertValue(serverMessage.getMessage(), Map.class);
+        Map<String, Object> dispenseData = objectMapper.convertValue(serverMessage.getMessage(), new TypeReference<Map<String, Object>>() {});
         assertEquals("AA:BB:CC:DD:EE:01", dispenseData.get("targetBoxMAC"));
         assertEquals(2, dispenseData.get("compartmentNumber"));
         assertEquals(3, dispenseData.get("amountOfPillsToDispense"));

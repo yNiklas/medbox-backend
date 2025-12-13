@@ -1,5 +1,6 @@
 package com.medbox.medboxbackend.websocket.handler;
 
+import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
 import com.medbox.medboxbackend.websocket.dto.*;
 import com.medbox.medboxbackend.websocket.service.DeviceWebSocketService;
@@ -94,7 +95,7 @@ public class DeviceWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void handleTopologyMessage(String deviceId, Object messageContent) throws IOException {
-        Map<String, String> topology = objectMapper.convertValue(messageContent, Map.class);
+        Map<String, String> topology = objectMapper.convertValue(messageContent, new TypeReference<Map<String, String>>() {});
         logger.info("Received topology from device {}: {}", deviceId, topology);
     }
 
