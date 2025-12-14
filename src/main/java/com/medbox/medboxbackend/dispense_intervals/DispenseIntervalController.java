@@ -22,6 +22,7 @@ public class DispenseIntervalController {
     public DispenseInterval createDispenseInterval(@RequestBody CreateDispenseIntervalRequest request,
                                                    Principal principal) {
         return dispenseIntervalService.createDispenseInterval(
+                request.compartmentId(),
                 request.interval(),
                 request.startTime(),
                 request.pillsToDispense(),

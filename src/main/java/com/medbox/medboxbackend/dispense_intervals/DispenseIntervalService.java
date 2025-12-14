@@ -13,7 +13,7 @@ public class DispenseIntervalService {
         this.dispenseIntervalRepository = dispenseIntervalRepository;
     }
 
-    public DispenseInterval createDispenseInterval(long interval, long startTime, int pillsToDispense, String userId) {
+    public DispenseInterval createDispenseInterval(Long compartmentId, long interval, long startTime, int pillsToDispense, String userId) {
         if (interval <= 0) throw new IllegalArgumentException("Interval must be positive");
         if (pillsToDispense <= 0) throw new IllegalArgumentException("Pills to dispense must be positive");
         if (startTime < 0) throw new IllegalArgumentException("Start time cannot be negative");
