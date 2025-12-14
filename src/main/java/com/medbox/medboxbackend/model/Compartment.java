@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -17,6 +18,7 @@ public class Compartment {
     @Id @GeneratedValue(strategy=GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
