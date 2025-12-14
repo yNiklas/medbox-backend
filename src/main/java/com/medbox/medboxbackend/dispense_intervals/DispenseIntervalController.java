@@ -1,5 +1,6 @@
 package com.medbox.medboxbackend.dispense_intervals;
 
+import com.medbox.medboxbackend.dispense_intervals.requests.CreateDispenseIntervalRequest;
 import com.medbox.medboxbackend.dispense_intervals.requests.UpdateDispenseIntervalRequest;
 import com.medbox.medboxbackend.model.DispenseInterval;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,6 +15,18 @@ public class DispenseIntervalController {
 
     public DispenseIntervalController(DispenseIntervalService dispenseIntervalService) {
         this.dispenseIntervalService = dispenseIntervalService;
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping
+    public DispenseInterval createDispenseInterval(@RequestBody CreateDispenseIntervalRequest request,
+                                                   Principal principal) {
+        return dispenseIntervalService.createDispenseInterval(
+                request.interval(),
+                request.startTime(),
+                request.pillsToDispense(),
+                principal.getName()
+        );
     }
 
     @PreAuthorize("isAuthenticated()")

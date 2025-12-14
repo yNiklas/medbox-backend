@@ -13,11 +13,28 @@ public class DispenseIntervalService {
         this.dispenseIntervalRepository = dispenseIntervalRepository;
     }
 
+    public DispenseInterval createDispenseInterval(long interval, long startTime, int pillsToDispense, String userId) {
+        if (interval <= 0) throw new IllegalArgumentException("Interval must be positive");
+        if (pillsToDispense <= 0) throw new IllegalArgumentException("Pills to dispense must be positive");
+        if (startTime < 0) throw new IllegalArgumentException("Start time cannot be negative");
+
+        DispenseInterval dispenseInterval = new DispenseInterval();
+        dispenseInterval.setInterval(interval);
+        dispenseInterval.setStartTime(startTime);
+        dispenseInterval.setPillsToDispense(pillsToDispense);
+
+        return dispenseIntervalRepository.save(dispenseInterval);
+    }
+
     public DispenseInterval updateDispenseInterval(Long id, long interval, long startTime, int pillsToDispense, String userId) {
         Optional<DispenseInterval> intervalOpt = dispenseIntervalRepository.findByIdAndUserId(id, userId);
         if (intervalOpt.isEmpty()) {
             throw new IllegalArgumentException("DispenseInterval with id " + id + " not found for user " + userId);
         }
+
+        if (interval <= 0) throw new IllegalArgumentException("Interval must be positive");
+        if (pillsToDispense <= 0) throw new IllegalArgumentException("Pills to dispense must be positive");
+        if (startTime < 0) throw new IllegalArgumentException("Start time cannot be negative");
 
         DispenseInterval dispenseInterval = intervalOpt.get();
         dispenseInterval.setInterval(interval);
