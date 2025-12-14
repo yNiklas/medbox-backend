@@ -19,9 +19,9 @@ public class DispenseIntervalController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping
-    public DispenseInterval createDispenseInterval(@RequestBody CreateDispenseIntervalRequest request,
+    public void createDispenseInterval(@RequestBody CreateDispenseIntervalRequest request,
                                                    Principal principal) {
-        return dispenseIntervalService.createDispenseInterval(
+        dispenseIntervalService.createDispenseInterval(
                 request.compartmentId(),
                 request.interval(),
                 request.startTime(),

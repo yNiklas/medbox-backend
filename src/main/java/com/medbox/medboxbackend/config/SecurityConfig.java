@@ -19,7 +19,7 @@ public class SecurityConfig {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
         //corsConfiguration.addAllowedOrigin("http://localhost:4200");
         //corsConfiguration.addAllowedOrigin("https://medbox.juliany.de");
-        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedOrigin("*"); // WebSockets currently need this (devices from everywhere)
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setMaxAge(3600L);

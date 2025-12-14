@@ -49,6 +49,13 @@ public class Compartment {
         }
     }
 
+    public void addInterval(DispenseInterval interval) {
+        if (intervals == null) {
+            intervals = new ArrayList<>();
+        }
+        intervals.add(interval);
+    }
+
     @JsonIgnore
     public Optional<Long> getNextDispenseTime() {
         if (intervals == null) return Optional.empty();

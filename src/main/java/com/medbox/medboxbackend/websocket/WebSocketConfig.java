@@ -19,6 +19,6 @@ public class WebSocketConfig implements WebSocketConfigurer {
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(deviceWebSocketHandler, "/device/{id}")
-                .setAllowedOrigins("*");
+                .setAllowedOrigins("*"); // Devices can connect from any origin
     }
 }
