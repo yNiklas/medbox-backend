@@ -17,8 +17,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.addAllowedOrigin("http://localhost:4200");
-        corsConfiguration.addAllowedOrigin("https://medbox.juliany.de");
+        //corsConfiguration.addAllowedOrigin("http://localhost:4200");
+        //corsConfiguration.addAllowedOrigin("https://medbox.juliany.de");
+        corsConfiguration.addAllowedOrigin("*");
         corsConfiguration.addAllowedHeader("*");
         corsConfiguration.addAllowedMethod("*");
         corsConfiguration.setMaxAge(3600L);
