@@ -42,8 +42,7 @@ public class CompartmentService {
         Optional<Compartment> compartmentOpt = compartmentRepository.findByIdAndUserId(id, userId);
         if (compartmentOpt.isEmpty()) {
             throw new IllegalArgumentException("Compartment with id " + id + " not found for user " + userId);
-        } else {
-            compartmentRepository.delete(compartmentOpt.get());
         }
+        compartmentRepository.delete(compartmentOpt.get());
     }
 }

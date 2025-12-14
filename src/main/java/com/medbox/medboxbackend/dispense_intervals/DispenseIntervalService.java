@@ -31,8 +31,7 @@ public class DispenseIntervalService {
         Optional<DispenseInterval> intervalOpt = dispenseIntervalRepository.findByIdAndUserId(id, userId);
         if (intervalOpt.isEmpty()) {
             throw new IllegalArgumentException("DispenseInterval with id " + id + " not found for user " + userId);
-        } else {
-            dispenseIntervalRepository.delete(intervalOpt.get());
         }
+        dispenseIntervalRepository.delete(intervalOpt.get());
     }
 }
