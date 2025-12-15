@@ -14,4 +14,6 @@ public interface MedBoxRepository extends CrudRepository<MedBox, Long> {
 
     @Query("SELECT COUNT(mb)>0 FROM MedBox mb JOIN MedBoxStack mbs ON mb MEMBER OF mbs.boxes WHERE mb.name = :name AND mbs.id = (SELECT mbs2.id FROM MedBox mb2 JOIN MedBoxStack mbs2 ON mb2 MEMBER OF mbs2.boxes WHERE mb2.id = :boxId)")
     boolean existsNameInSameStack(String name, Long boxId);
+
+    Optional<MedBox> findByMac(String mac);
 }

@@ -35,4 +35,19 @@ public class MedBox {
                 new Compartment("Compartment 4")
         );
     }
+
+    public void updateOnlineStatus() {
+        if (status == null) {
+            status = new MedBoxStatus();
+        }
+        status.setLastSeenAt(System.currentTimeMillis());
+        status.setError(null);
+    }
+
+    public void registerError(String error) {
+        if (status == null) {
+            status = new MedBoxStatus();
+        }
+        status.setError(error);
+    }
 }

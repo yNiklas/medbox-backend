@@ -1,6 +1,7 @@
 package com.medbox.medboxbackend.boxes;
 
 import com.medbox.medboxbackend.model.MedBox;
+import com.medbox.medboxbackend.model.MedBoxStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -45,5 +46,16 @@ public class MedBoxService {
         } else {
             medBoxRepository.delete(boxOpt.get());
         }
+    }
+
+    public void registerMedBoxError(String mac, String error) {
+        Optional<MedBox> boxOpt = medBoxRepository.findByMac(mac);
+        if (boxOpt.isEmpty()) {
+            throw new IllegalArgumentException("MedBox with MAC " + mac + " not found.");
+        }
+
+        boxOpt.get().registerError(error);
+
+        medBoxRepository.save(boxOpt.get());
     }
 }
