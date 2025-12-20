@@ -38,7 +38,7 @@ public class MedBoxDispenseSchedulerService {
             return;
         }
 
-        removeScheduledDispense(mosMac);
+        removeScheduledDispenseByMosMac(mosMac);
 
         boxesOpt.get().forEach(box -> {
             List<Compartment> compartments = box.getCompartments();
@@ -49,6 +49,11 @@ public class MedBoxDispenseSchedulerService {
                 }
             }
         });
+    }
+
+    public void rescheduleDispenseInterval(String mosMac, String boxMac, int compartmentNumber, DispenseInterval interval) {
+        removeScheduledDispenseByDispenseIntervalId(interval.getId());
+        scheduleDispense(mosMac, boxMac, compartmentNumber, interval);
     }
 
     private void scheduleDispense(String mosMac, String boxMac, int compartmentNumber, DispenseInterval interval) {
@@ -66,12 +71,22 @@ public class MedBoxDispenseSchedulerService {
                 interval.getInterval(),
                 TimeUnit.MILLISECONDS
         );
-        scheduledBoxDispenses.add(new ScheduledBoxDispense(mosMac, boxMac, compartmentNumber, scheduledFuture));
+        scheduledBoxDispenses.add(new ScheduledBoxDispense(mosMac, boxMac, compartmentNumber, interval.getId(), scheduledFuture));
     }
 
-    public void removeScheduledDispense(String mosMac) {
+    public void removeScheduledDispenseByMosMac(String mosMac) {
         scheduledBoxDispenses.removeIf(scheduledDispense -> {
             if (scheduledDispense.isOfStack(mosMac)) {
+                scheduledDispense.scheduledFuture().cancel(false);
+                return true;
+            }
+            return false;
+        });
+    }
+
+    public void removeScheduledDispenseByDispenseIntervalId(Long intervalId) {
+        scheduledBoxDispenses.removeIf(scheduledDispense -> {
+            if (scheduledDispense.isOfInterval(intervalId)) {
                 scheduledDispense.scheduledFuture().cancel(false);
                 return true;
             }

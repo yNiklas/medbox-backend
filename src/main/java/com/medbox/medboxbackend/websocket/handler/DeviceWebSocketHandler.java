@@ -1,7 +1,6 @@
 package com.medbox.medboxbackend.websocket.handler;
 
 import com.medbox.medboxbackend.boxes.MedBoxDispenseSchedulerService;
-import com.medbox.medboxbackend.boxes.MedBoxService;
 import com.medbox.medboxbackend.stacks.MedBoxStackService;
 import tools.jackson.core.type.TypeReference;
 import tools.jackson.databind.ObjectMapper;
@@ -66,7 +65,7 @@ public class DeviceWebSocketHandler extends TextWebSocketHandler {
         String deviceMAC = extractDeviceMAC(session);
         if (deviceMAC != null) {
             deviceWebSocketService.removeSession(deviceMAC);
-            medBoxDispenseSchedulerService.removeScheduledDispense(deviceMAC);
+            medBoxDispenseSchedulerService.removeScheduledDispenseByMosMac(deviceMAC);
         }
     }
 

@@ -1,9 +1,12 @@
 package com.medbox.medboxbackend.dispense_intervals;
 
+import com.medbox.medboxbackend.boxes.MedBoxDispenseSchedulerService;
 import com.medbox.medboxbackend.compartments.CompartmentRepository;
 import com.medbox.medboxbackend.compartments.CompartmentService;
 import com.medbox.medboxbackend.model.Compartment;
 import com.medbox.medboxbackend.model.DispenseInterval;
+import com.medbox.medboxbackend.model.MedBox;
+import com.medbox.medboxbackend.model.MedBoxStack;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,11 +16,13 @@ public class DispenseIntervalService {
     private final DispenseIntervalRepository dispenseIntervalRepository;
     private final CompartmentService compartmentService;
     private final CompartmentRepository compartmentRepository;
+    private final MedBoxDispenseSchedulerService medBoxDispenseSchedulerService;
 
-    public DispenseIntervalService(DispenseIntervalRepository dispenseIntervalRepository, CompartmentService compartmentService, CompartmentRepository compartmentRepository) {
+    public DispenseIntervalService(DispenseIntervalRepository dispenseIntervalRepository, CompartmentService compartmentService, CompartmentRepository compartmentRepository, MedBoxDispenseSchedulerService medBoxDispenseSchedulerService) {
         this.dispenseIntervalRepository = dispenseIntervalRepository;
         this.compartmentService = compartmentService;
         this.compartmentRepository = compartmentRepository;
+        this.medBoxDispenseSchedulerService = medBoxDispenseSchedulerService;
     }
 
     public void createDispenseInterval(Long compartmentId, long interval, long startTime, int pillsToDispense, String userId) {
@@ -35,9 +40,14 @@ public class DispenseIntervalService {
         dispenseInterval.setStartTime(startTime);
         dispenseInterval.setPillsToDispense(pillsToDispense);
 
-        compartmentOpt.get().addInterval(dispenseInterval);
+        int intervalCount = compartmentOpt.get().intervalCount();
+        compartmentOpt.get().appendInterval(dispenseInterval);
 
-        compartmentRepository.save(compartmentOpt.get());
+        Compartment savedCompartment = compartmentRepository.save(compartmentOpt.get());
+        if (savedCompartment.intervalCount() > intervalCount) {
+            DispenseInterval savedInterval = savedCompartment.getIntervals().get(intervalCount);
+            scheduleInterval(savedInterval);
+        }
     }
 
     public DispenseInterval updateDispenseInterval(Long id, long interval, long startTime, int pillsToDispense, String userId) {
@@ -55,6 +65,8 @@ public class DispenseIntervalService {
         dispenseInterval.setStartTime(startTime);
         dispenseInterval.setPillsToDispense(pillsToDispense);
 
+        scheduleInterval(dispenseInterval);
+
         return dispenseIntervalRepository.save(dispenseInterval);
     }
 
@@ -64,5 +76,28 @@ public class DispenseIntervalService {
             throw new IllegalArgumentException("DispenseInterval with id " + id + " not found for user " + userId);
         }
         dispenseIntervalRepository.delete(intervalOpt.get());
+        medBoxDispenseSchedulerService.removeScheduledDispenseByDispenseIntervalId(id);
+    }
+
+    private void scheduleInterval(DispenseInterval dispenseInterval) {
+        Long id = dispenseInterval.getId();
+        Optional<MedBoxStack> stackOpt = dispenseIntervalRepository.findStackByDispenseIntervalId(id);
+        stackOpt.ifPresent(medBoxStack -> {
+            Optional<MedBox> mosOpt = medBoxStack.getMos();
+            Optional<MedBox> dispenseBoxOpt = medBoxStack.findMedBoxByDispenseIntervalId(id);
+            if (dispenseBoxOpt.isEmpty()) {
+                throw new IllegalStateException("MedBox for DispenseInterval id " + id + " not found in stack");
+            }
+            Optional<Integer> compartmentIndexOpt = dispenseBoxOpt.get().getCompartmentByDispenseIntervalId(id);
+            if (compartmentIndexOpt.isEmpty()) {
+                throw new IllegalStateException("Compartment for DispenseInterval id " + id + " not found in MedBox " + dispenseBoxOpt.get().getMac());
+            }
+            mosOpt.ifPresent(mos -> medBoxDispenseSchedulerService.rescheduleDispenseInterval(
+                    mos.getMac(),
+                    dispenseBoxOpt.get().getMac(),
+                    compartmentIndexOpt.get(),
+                    dispenseInterval
+            ));
+        });
     }
 }

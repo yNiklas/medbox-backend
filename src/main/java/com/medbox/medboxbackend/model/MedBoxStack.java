@@ -4,11 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.minidev.json.annotate.JsonIgnore;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
 @Getter
@@ -49,8 +47,14 @@ public class MedBoxStack {
                     danglingMACs.put(mac, i);
                 } else if (!Objects.equals(boxes.get(i).getMac(), mac)) {
                     orderChanged = true;
-                    boolean isDangling = boxes.stream().anyMatch(existingBox -> Objects.equals(existingBox.getMac(), mac));
-                    if (isDangling) danglingMACs.put(mac, i);
+                    Optional<MedBox> existingBox = boxes.stream().filter(eb -> Objects.equals(eb.getMac(), mac)).findFirst();
+                    if (existingBox.isEmpty()) {
+                        danglingMACs.put(mac, i);
+                    } else {
+                        // Reorder
+                        boxes.remove(existingBox.get());
+                        boxes.add(i, existingBox.get());
+                    }
                 }
             }
         }
@@ -66,5 +70,27 @@ public class MedBoxStack {
         boxes.add(position, slaveBox);
         danglingMACs.remove(slaveBoxMac);
         return slaveBox;
+    }
+
+    @JsonIgnore
+    public Optional<MedBox> getMos() {
+        if (boxes == null || boxes.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(boxes.getFirst());
+    }
+
+    public Optional<MedBox> findMedBoxByDispenseIntervalId(Long dispenseIntervalId) {
+        if (boxes == null) {
+            return Optional.empty();
+        }
+        for (MedBox box : boxes) {
+            for (Compartment compartment : box.getCompartments()) {
+                if (compartment.hasIntervalId(dispenseIntervalId)) {
+                    return Optional.of(box);
+                }
+            }
+        }
+        return Optional.empty();
     }
 }

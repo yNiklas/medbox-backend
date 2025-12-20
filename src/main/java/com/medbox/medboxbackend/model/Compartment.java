@@ -49,7 +49,12 @@ public class Compartment {
         }
     }
 
-    public void addInterval(DispenseInterval interval) {
+    @JsonIgnore
+    public int intervalCount() {
+        return intervals == null ? 0 : intervals.size();
+    }
+
+    public void appendInterval(DispenseInterval interval) {
         if (intervals == null) {
             intervals = new ArrayList<>();
         }
@@ -73,5 +78,10 @@ public class Compartment {
         return intervals.stream()
                 .filter(interval -> interval.hasUpcomingDispense() && interval.getPillsToDispense() > remainingPills)
                 .min(Comparator.comparingLong((DispenseInterval di) -> di.getNextDispenseTime(now)));
+    }
+
+    public boolean hasIntervalId(Long intervalId) {
+        if (intervals == null) return false;
+        return intervals.stream().anyMatch(interval -> interval.getId().equals(intervalId));
     }
 }

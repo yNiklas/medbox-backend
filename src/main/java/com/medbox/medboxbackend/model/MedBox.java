@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -49,5 +50,15 @@ public class MedBox {
             status = new MedBoxStatus();
         }
         status.setError(error);
+    }
+
+    public Optional<Integer> getCompartmentByDispenseIntervalId(Long dispenseIntervalId) {
+        for (int i = 0; i < compartments.size(); i++) {
+            Compartment compartment = compartments.get(i);
+            if (compartment.hasIntervalId(dispenseIntervalId)) {
+                return Optional.of(i);
+            }
+        }
+        return Optional.empty();
     }
 }
