@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -25,10 +26,10 @@ public class MedBoxStack {
     boolean orderChanged;
 
     @ElementCollection
-    @MapKeyColumn(name = "position")
-    @Column(name = "mac")
+    @MapKeyColumn(name = "mac")
+    @Column(name = "position")
     @CollectionTable(name = "medboxstack_dangling_macs", joinColumns = @JoinColumn(name = "med_box_stack_id"))
-    private Map<Integer, String> danglingMACs;
+    private Map<String, Integer> danglingMACs = new HashMap<>();
 
     private String userId;
 
@@ -45,13 +46,25 @@ public class MedBoxStack {
             for (int i = 0; i < macsInPhysicalOrder.size(); i++) {
                 String mac = macsInPhysicalOrder.get(i);
                 if (boxes.size() <= i) {
-                    danglingMACs.put(i, mac);
+                    danglingMACs.put(mac, i);
                 } else if (!Objects.equals(boxes.get(i).getMac(), mac)) {
                     orderChanged = true;
                     boolean isDangling = boxes.stream().anyMatch(existingBox -> Objects.equals(existingBox.getMac(), mac));
-                    if (isDangling) danglingMACs.put(i, mac);
+                    if (isDangling) danglingMACs.put(mac, i);
                 }
             }
         }
+    }
+
+    public MedBox onboardSlaveMedBox(String slaveBoxMac, String slaveBoxName) {
+        if (danglingMACs == null || !danglingMACs.containsKey(slaveBoxMac)) {
+            throw new IllegalArgumentException("No dangling MAC address found for " + slaveBoxMac);
+        }
+
+        int position = danglingMACs.get(slaveBoxMac);
+        MedBox slaveBox = new MedBox(slaveBoxMac, slaveBoxName);
+        boxes.add(position, slaveBox);
+        danglingMACs.remove(slaveBoxMac);
+        return slaveBox;
     }
 }

@@ -1,5 +1,6 @@
 package com.medbox.medboxbackend.boxes;
 
+import com.medbox.medboxbackend.boxes.requests.OnboardSlaveRequest;
 import com.medbox.medboxbackend.boxes.requests.RenameMedBoxRequest;
 import com.medbox.medboxbackend.model.MedBox;
 import org.springframework.security.access.prepost.PreAuthorize;

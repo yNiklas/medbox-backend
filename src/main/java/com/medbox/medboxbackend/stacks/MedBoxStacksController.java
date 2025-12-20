@@ -1,6 +1,8 @@
 package com.medbox.medboxbackend.stacks;
 
+import com.medbox.medboxbackend.boxes.requests.OnboardSlaveRequest;
 import com.medbox.medboxbackend.exceptions.NoSuchResourceException;
+import com.medbox.medboxbackend.model.MedBox;
 import com.medbox.medboxbackend.model.MedBoxStack;
 import com.medbox.medboxbackend.stacks.requests.AssignMedBoxStackRequest;
 import com.medbox.medboxbackend.stacks.requests.RenameMedBoxStackRequest;
@@ -50,5 +52,11 @@ public class MedBoxStacksController {
     @DeleteMapping("/{id}")
     public void deleteMedBoxStackById(@PathVariable Long id, Principal principal) {
         medBoxStackService.deleteMedBoxStackById(id, principal.getName());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping("/{id}/slave-onboarding")
+    public MedBox onboardSlaveMedBox(@PathVariable Long id, @RequestBody OnboardSlaveRequest request, Principal principal) {
+        return medBoxStackService.onboardSlaveMedBox(id, request.boxMac(), request.boxName(), principal.getName());
     }
 }

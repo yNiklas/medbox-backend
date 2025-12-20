@@ -111,4 +111,13 @@ public class MedBoxStackService {
         // Until now: Content is always the MAC address of the affected box
         medBoxService.registerMedBoxError(content, "The box is no longer connected (error code " + errorType + ").");
     }
+
+    public MedBox onboardSlaveMedBox(Long stackId, String slaveBoxMac, String slaveBoxName, String userId) {
+        Optional<MedBoxStack> stackOpt = medBoxStackRepository.findByIdAndUserId(stackId, userId);
+        if (stackOpt.isEmpty()) {
+            throw new IllegalArgumentException("MedBoxStack with id " + stackId + " not found for user " + userId);
+        }
+
+        return stackOpt.get().onboardSlaveMedBox(slaveBoxMac, slaveBoxName);
+    }
 }
