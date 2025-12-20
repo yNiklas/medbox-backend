@@ -47,6 +47,15 @@ public class MedBoxStackService {
         return medBoxStackRepository.findByIdAndUserId(id, userId);
     }
 
+    public Optional<List<MedBox>> getBoxesOfStack(String masterMACAddress) {
+        return medBoxStackRepository.findMedBoxStackByMedBoxMACAddress(masterMACAddress)
+                .map(MedBoxStack::getBoxes);
+    }
+
+    public Iterable<MedBoxStack> getAllStacks() {
+        return medBoxStackRepository.findAll();
+    }
+
     public MedBoxStack renameMedBoxStack(Long id, String newName, String userId) {
         Optional<MedBoxStack> stackOpt = medBoxStackRepository.findByIdAndUserId(id, userId);
         if (stackOpt.isEmpty()) {

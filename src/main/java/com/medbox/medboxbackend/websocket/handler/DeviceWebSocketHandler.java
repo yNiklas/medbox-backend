@@ -1,5 +1,6 @@
 package com.medbox.medboxbackend.websocket.handler;
 
+import com.medbox.medboxbackend.boxes.MedBoxDispenseSchedulerService;
 import com.medbox.medboxbackend.boxes.MedBoxService;
 import com.medbox.medboxbackend.stacks.MedBoxStackService;
 import tools.jackson.core.type.TypeReference;
@@ -24,10 +25,12 @@ public class DeviceWebSocketHandler extends TextWebSocketHandler {
     private final DeviceWebSocketService deviceWebSocketService;
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final MedBoxStackService medBoxStackService;
+    private final MedBoxDispenseSchedulerService medBoxDispenseSchedulerService;
 
-    public DeviceWebSocketHandler(DeviceWebSocketService deviceWebSocketService, MedBoxStackService medBoxStackService) {
+    public DeviceWebSocketHandler(DeviceWebSocketService deviceWebSocketService, MedBoxStackService medBoxStackService, MedBoxDispenseSchedulerService medBoxDispenseSchedulerService) {
         this.deviceWebSocketService = deviceWebSocketService;
         this.medBoxStackService = medBoxStackService;
+        this.medBoxDispenseSchedulerService = medBoxDispenseSchedulerService;
     }
 
     @Override
@@ -35,6 +38,7 @@ public class DeviceWebSocketHandler extends TextWebSocketHandler {
         String deviceMAC = extractDeviceMAC(session);
         if (deviceMAC != null) {
             deviceWebSocketService.registerSession(deviceMAC, session);
+            medBoxDispenseSchedulerService.reScheduleStack(deviceMAC);
         } else {
             logger.warn("Connection attempted without device MAC");
             session.close(CloseStatus.BAD_DATA);
@@ -62,6 +66,7 @@ public class DeviceWebSocketHandler extends TextWebSocketHandler {
         String deviceMAC = extractDeviceMAC(session);
         if (deviceMAC != null) {
             deviceWebSocketService.removeSession(deviceMAC);
+            medBoxDispenseSchedulerService.removeScheduledDispense(deviceMAC);
         }
     }
 

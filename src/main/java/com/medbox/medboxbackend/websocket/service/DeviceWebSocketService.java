@@ -19,24 +19,24 @@ public class DeviceWebSocketService {
     private final Map<String, WebSocketSession> sessions = new ConcurrentHashMap<>();
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    public void registerSession(String deviceId, WebSocketSession session) {
-        sessions.put(deviceId, session);
-        logger.info("Device {} connected", deviceId);
+    public void registerSession(String mosMac, WebSocketSession session) {
+        sessions.put(mosMac, session);
+        logger.info("Device {} connected", mosMac);
     }
 
-    public void removeSession(String deviceId) {
-        sessions.remove(deviceId);
-        logger.info("Device {} disconnected", deviceId);
+    public void removeSession(String mosMac) {
+        sessions.remove(mosMac);
+        logger.info("Device {} disconnected", mosMac);
     }
 
-    public boolean isDeviceConnected(String deviceId) {
-        return sessions.containsKey(deviceId);
+    public boolean isDeviceConnected(String mosMac) {
+        return sessions.containsKey(mosMac);
     }
 
-    public void requestDispense(String id, String boxMac, int compartmentNumber, int amountOfPills) throws IOException {
-        WebSocketSession session = sessions.get(id);
+    public void requestDispense(String mosMac, String boxMac, int compartmentNumber, int amountOfPills) throws IOException {
+        WebSocketSession session = sessions.get(mosMac);
         if (session == null || !session.isOpen()) {
-            throw new IllegalStateException("Device " + id + " is not connected");
+            throw new IllegalStateException("Device " + mosMac + " is not connected");
         }
 
         DispenseRequest dispenseRequest = new DispenseRequest(boxMac, compartmentNumber, amountOfPills);
@@ -45,6 +45,6 @@ public class DeviceWebSocketService {
         String jsonMessage = objectMapper.writeValueAsString(message);
         session.sendMessage(new TextMessage(jsonMessage));
         logger.info("Sent dispense request to device {}: boxMac={}, compartment={}, pills={}", 
-                    id, boxMac, compartmentNumber, amountOfPills);
+                    mosMac, boxMac, compartmentNumber, amountOfPills);
     }
 }

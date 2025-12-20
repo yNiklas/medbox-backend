@@ -39,14 +39,17 @@ public class MedBoxStack {
     }
 
     public void updateOrder(List<String> macsInPhysicalOrder) {
+        if (macsInPhysicalOrder == null) return;
+
         if (boxes != null) {
             for (int i = 0; i < macsInPhysicalOrder.size(); i++) {
                 String mac = macsInPhysicalOrder.get(i);
                 if (boxes.size() <= i) {
                     danglingMACs.put(i, mac);
                 } else if (!Objects.equals(boxes.get(i).getMac(), mac)) {
-                    danglingMACs.put(i, mac);
                     orderChanged = true;
+                    boolean isDangling = boxes.stream().anyMatch(existingBox -> Objects.equals(existingBox.getMac(), mac));
+                    if (isDangling) danglingMACs.put(i, mac);
                 }
             }
         }
