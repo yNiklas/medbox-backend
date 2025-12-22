@@ -35,6 +35,7 @@ public class MedBox {
                 new Compartment("Compartment 3"),
                 new Compartment("Compartment 4")
         );
+        this.status = new MedBoxStatus(System.currentTimeMillis());
     }
 
     public void updateOnlineStatus() {
