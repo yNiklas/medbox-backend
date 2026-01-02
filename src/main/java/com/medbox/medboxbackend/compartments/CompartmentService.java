@@ -45,4 +45,22 @@ public class CompartmentService {
         }
         compartmentRepository.delete(compartmentOpt.get());
     }
+
+    public Compartment refillCompartment(Long id, int pillsToAdd, String userId) {
+        Optional<Compartment> compartmentOpt = compartmentRepository.findByIdAndUserId(id, userId);
+        if (compartmentOpt.isEmpty()) {
+            throw new IllegalArgumentException("Compartment with id " + id + " not found for user " + userId);
+        }
+
+        Compartment compartment = compartmentOpt.get();
+        int newRemainingPills = compartment.getRemainingPills() + pillsToAdd;
+        
+        // Ensure remainingPills stays >= 0
+        if (newRemainingPills < 0) {
+            newRemainingPills = 0;
+        }
+        
+        compartment.setRemainingPills(newRemainingPills);
+        return compartmentRepository.save(compartment);
+    }
 }

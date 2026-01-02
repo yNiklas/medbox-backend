@@ -1,5 +1,6 @@
 package com.medbox.medboxbackend.compartments;
 
+import com.medbox.medboxbackend.compartments.requests.RefillCompartmentRequest;
 import com.medbox.medboxbackend.compartments.requests.RenameCompartmentRequest;
 import com.medbox.medboxbackend.model.Compartment;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,5 +34,11 @@ public class CompartmentController {
     @DeleteMapping("/{id}")
     public void deleteCompartmentById(@PathVariable Long id, Principal principal) {
         compartmentService.deleteCompartment(id, principal.getName());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/{id}/refill")
+    public Compartment refillCompartment(@PathVariable Long id, @RequestBody RefillCompartmentRequest request, Principal principal) {
+        return compartmentService.refillCompartment(id, request.pillsToAdd(), principal.getName());
     }
 }
