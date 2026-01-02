@@ -24,6 +24,7 @@ public class Compartment {
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DispenseInterval> intervals;
 
+    @Setter
     private int remainingPills = 0;
 
     private long lastDispenseTime; // UTC timestamp in milliseconds
