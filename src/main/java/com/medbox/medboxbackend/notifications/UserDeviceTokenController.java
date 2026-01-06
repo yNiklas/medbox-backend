@@ -28,7 +28,7 @@ public class UserDeviceTokenController {
 
     @PreAuthorize("isAuthenticated()")
     @DeleteMapping("/unregister-token")
-    public void unregisterDeviceToken(@RequestParam String fcmToken) {
-        userDeviceTokenService.unregisterDeviceToken(fcmToken);
+    public void unregisterDeviceToken(@RequestParam String fcmToken, Principal principal) {
+        userDeviceTokenService.unregisterDeviceToken(fcmToken, principal.getName());
     }
 }

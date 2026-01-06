@@ -39,9 +39,26 @@ public class UserDeviceTokenService {
     }
 
     @Transactional
-    public void unregisterDeviceToken(String fcmToken) {
+    public void unregisterDeviceToken(String fcmToken, String userId) {
+        Optional<UserDeviceToken> tokenOpt = userDeviceTokenRepository.findByFcmToken(fcmToken);
+        if (tokenOpt.isEmpty()) {
+            logger.warn("Token not found for deletion: {}", fcmToken);
+            return;
+        }
+        
+        UserDeviceToken token = tokenOpt.get();
+        if (!token.getUserId().equals(userId)) {
+            throw new IllegalArgumentException("Token does not belong to user: " + userId);
+        }
+        
         userDeviceTokenRepository.deleteByFcmToken(fcmToken);
         logger.info("Unregistered device token: {}", fcmToken);
+    }
+
+    @Transactional
+    public void unregisterInvalidToken(String fcmToken) {
+        userDeviceTokenRepository.deleteByFcmToken(fcmToken);
+        logger.info("Unregistered invalid device token: {}", fcmToken);
     }
 
     public List<UserDeviceToken> getUserDeviceTokens(String userId) {

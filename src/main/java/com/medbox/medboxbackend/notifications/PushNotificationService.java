@@ -46,7 +46,7 @@ public class PushNotificationService {
                                 .setBody(body)
                                 .build())
                         .putData("boxName", boxName)
-                        .putData("compartmentNumber", String.valueOf(compartmentNumber))
+                        .putData("compartmentNumber", String.valueOf(compartmentNumber + 1))
                         .putData("pillsDispensed", String.valueOf(pillsDispensed))
                         .setToken(deviceToken.getFcmToken())
                         .build();
@@ -67,7 +67,7 @@ public class PushNotificationService {
         // Clean up invalid tokens
         for (String invalidToken : invalidTokens) {
             try {
-                userDeviceTokenService.unregisterDeviceToken(invalidToken);
+                userDeviceTokenService.unregisterInvalidToken(invalidToken);
                 logger.info("Removed invalid token: {}", invalidToken);
             } catch (Exception e) {
                 logger.error("Failed to remove invalid token {}: {}", invalidToken, e.getMessage());
