@@ -99,7 +99,7 @@ Push notifications include:
 
 **Data:**
 - `boxName`: Name of the MedBox device
-- `compartmentNumber`: Zero-based compartment index
+- `compartmentNumber`: User-facing compartment number (1-based, e.g., "1", "2", "3", "4")
 - `pillsDispensed`: Number of pills dispensed
 
 ## Error Handling
