@@ -19,6 +19,16 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, Object>> handleIllegalState(IllegalStateException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+                Map.of(
+                        "error", "Conflict",
+                        "message", ex.getMessage()
+                )
+        );
+    }
+
     @ExceptionHandler(NoSuchResourceException.class)
     public ResponseEntity<Map<String, Object>> handleNoSuchResource(NoSuchResourceException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
