@@ -1,17 +1,27 @@
 package com.medbox.medboxbackend.compartments;
 
 import com.medbox.medboxbackend.model.Compartment;
+import com.medbox.medboxbackend.model.MedBox;
+import com.medbox.medboxbackend.model.MedBoxStack;
+import com.medbox.medboxbackend.websocket.service.DeviceWebSocketService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class CompartmentService {
-    private final CompartmentRepository compartmentRepository;
+    private static final Logger logger = LoggerFactory.getLogger(CompartmentService.class);
 
-    public CompartmentService(CompartmentRepository compartmentRepository) {
+    private final CompartmentRepository compartmentRepository;
+    private final DeviceWebSocketService deviceWebSocketService;
+
+    public CompartmentService(CompartmentRepository compartmentRepository, DeviceWebSocketService deviceWebSocketService) {
         this.compartmentRepository = compartmentRepository;
+        this.deviceWebSocketService = deviceWebSocketService;
     }
 
     public Optional<Compartment> getCompartmentByIdAndUserId(Long id, String userId) {
@@ -61,6 +71,40 @@ public class CompartmentService {
         }
         
         compartment.setRemainingPills(newRemainingPills);
+        requestFunnelSpotChange(id);
+
         return compartmentRepository.save(compartment);
+    }
+
+    private void requestFunnelSpotChange(Long id) {
+        Optional<MedBoxStack> stackOfCompartmentOpt = compartmentRepository.findStackOfCompartment(id);
+        if (stackOfCompartmentOpt.isPresent()) {
+            Optional<MedBox> mosOpt = stackOfCompartmentOpt.get().getMos();
+            if (mosOpt.isPresent()) {
+                Optional<MedBox> targetBoxOpt = stackOfCompartmentOpt.get().findMedBoxByCompartmentId(id);
+                if (targetBoxOpt.isPresent()) {
+                    Optional<Integer> targetCompartmentNumberOpt = targetBoxOpt.get().getCompartmentNumberById(id);
+                    if (targetCompartmentNumberOpt.isPresent()) {
+                        try {
+                            deviceWebSocketService.requestFunnelSpotChange(
+                                    mosOpt.get().getMac(),
+                                    targetBoxOpt.get().getMac(),
+                                    targetCompartmentNumberOpt.get()
+                            );
+                        } catch (IOException e) {
+                            logger.error("Failed to send funnel spot change request for compartment id {}", id, e);
+                        }
+                    } else {
+                        logger.warn("Target compartment number not found in MedBox for compartment id {}", id);
+                    }
+                } else {
+                    logger.warn("Target MedBox not found in MedBoxStack for compartment id {}", id);
+                }
+            } else {
+                logger.warn("MOS not found in MedBoxStack for compartment id {}", id);
+            }
+        } else {
+            logger.warn("MedBoxStack not found for compartment id {}", id);
+        }
     }
 }

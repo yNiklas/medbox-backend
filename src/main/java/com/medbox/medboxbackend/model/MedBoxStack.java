@@ -93,4 +93,16 @@ public class MedBoxStack {
         }
         return Optional.empty();
     }
+
+    public Optional<MedBox> findMedBoxByCompartmentId(Long compartmentId) {
+        if (boxes == null) {
+            return Optional.empty();
+        }
+        for (MedBox box : boxes) {
+            if (box.hasCompartment(compartmentId)) {
+                return Optional.of(box);
+            }
+        }
+        return Optional.empty();
+    }
 }

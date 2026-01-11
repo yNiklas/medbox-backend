@@ -62,4 +62,18 @@ public class MedBox {
         }
         return Optional.empty();
     }
+
+    public boolean hasCompartment(Long compartmentId) {
+        return compartments != null && compartments.stream().anyMatch(c -> c.getId().equals(compartmentId));
+    }
+
+    public Optional<Integer> getCompartmentNumberById(Long compartmentId) {
+        for (int i = 0; i < compartments.size(); i++) {
+            Compartment compartment = compartments.get(i);
+            if (compartment.getId().equals(compartmentId)) {
+                return Optional.of(i);
+            }
+        }
+        return Optional.empty();
+    }
 }
