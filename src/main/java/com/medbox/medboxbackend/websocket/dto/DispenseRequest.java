@@ -7,9 +7,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DispenseRequest {
-    @JsonProperty("targetBoxMAC")
-    private String targetBoxMAC;
-    
     @JsonProperty("compartmentNumber")
     private int compartmentNumber;
     

@@ -53,8 +53,8 @@ public class DeviceWebSocketService {
             throw new IllegalStateException("Device " + mosMac + " is not connected");
         }
 
-        DispenseRequest dispenseRequest = new DispenseRequest(boxMac, compartmentNumber, amountOfPills);
-        ServerMessage message = new ServerMessage(3, dispenseRequest);
+        DispenseRequest dispenseRequest = new DispenseRequest(compartmentNumber, amountOfPills);
+        ServerMessage message = new ServerMessage(3, boxMac, dispenseRequest);
         
         String jsonMessage = objectMapper.writeValueAsString(message);
         session.sendMessage(new TextMessage(jsonMessage));
@@ -95,8 +95,8 @@ public class DeviceWebSocketService {
             throw new IllegalStateException("Device " + mosMac + " is not connected");
         }
 
-        ChangeFunnelSpotRequest changeFunnelSpotRequest = new ChangeFunnelSpotRequest(targetBoxMAC, targetCompartmentNumber);
-        ServerMessage message = new ServerMessage(4, changeFunnelSpotRequest);
+        ChangeFunnelSpotRequest changeFunnelSpotRequest = new ChangeFunnelSpotRequest(targetCompartmentNumber);
+        ServerMessage message = new ServerMessage(4, targetBoxMAC, changeFunnelSpotRequest);
 
         String jsonMessage = objectMapper.writeValueAsString(message);
         session.sendMessage(new TextMessage(jsonMessage));

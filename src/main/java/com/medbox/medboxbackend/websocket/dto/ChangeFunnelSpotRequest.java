@@ -7,9 +7,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ChangeFunnelSpotRequest {
-    @JsonProperty("targetBoxMAC")
-    private String targetBoxMAC;
-
     @JsonProperty("targetCompartmentNumber")
     private int targetCompartmentNumber;
 }

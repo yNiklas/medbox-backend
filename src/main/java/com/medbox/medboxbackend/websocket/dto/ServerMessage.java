@@ -9,6 +9,9 @@ import lombok.Data;
 public class ServerMessage {
     @JsonProperty("messageType")
     private int messageType;
+
+    @JsonProperty("targetBoxMAC")
+    private String targetBoxMAC;
     
     @JsonProperty("message")
     private Object message;
