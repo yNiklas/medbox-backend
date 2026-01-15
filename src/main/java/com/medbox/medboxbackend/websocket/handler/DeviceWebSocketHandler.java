@@ -66,6 +66,7 @@ public class DeviceWebSocketHandler extends TextWebSocketHandler {
         if (deviceMAC != null) {
             deviceWebSocketService.removeSession(deviceMAC);
             medBoxDispenseSchedulerService.removeScheduledDispenseByMosMac(deviceMAC);
+            medBoxStackService.onMosDisconnect(deviceMAC);
         }
     }
 

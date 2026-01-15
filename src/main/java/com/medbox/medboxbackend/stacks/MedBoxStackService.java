@@ -102,7 +102,6 @@ public class MedBoxStackService {
             for (MedBox box : stack.getBoxes()) {
                 box.updateOnlineStatus();
             }
-
             medBoxStackRepository.save(stack);
         }
     }
@@ -110,6 +109,21 @@ public class MedBoxStackService {
     public void handleStackError(int errorType, String content) {
         // Until now: Content is always the MAC address of the affected box
         medBoxService.registerMedBoxError(content, "The box is no longer connected (error code " + errorType + ").");
+    }
+
+    public void onMosDisconnect(String masterMAC) {
+        Optional<MedBoxStack> stackOpt = medBoxStackRepository.findMedBoxStackByMedBoxMACAddress(masterMAC);
+        if (stackOpt.isEmpty()) {
+            throw new IllegalArgumentException("MedBoxStack with master MAC " + masterMAC + " not found.");
+        }
+
+        MedBoxStack stack = stackOpt.get();
+        if (stack.getBoxes() != null) {
+            for (MedBox box : stack.getBoxes()) {
+                box.onDisconnected();
+            }
+            medBoxStackRepository.save(stack);
+        }
     }
 
     public MedBox onboardSlaveMedBox(Long stackId, String slaveBoxMac, String slaveBoxName, String userId) {

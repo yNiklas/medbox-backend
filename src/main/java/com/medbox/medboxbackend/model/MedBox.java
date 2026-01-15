@@ -53,6 +53,13 @@ public class MedBox {
         status.setError(error);
     }
 
+    public void onDisconnected() {
+        if (status == null) {
+            status = new MedBoxStatus();
+        }
+        status.setError("Device disconnected");
+    }
+
     public Optional<Integer> getCompartmentByDispenseIntervalId(Long dispenseIntervalId) {
         for (int i = 0; i < compartments.size(); i++) {
             Compartment compartment = compartments.get(i);
