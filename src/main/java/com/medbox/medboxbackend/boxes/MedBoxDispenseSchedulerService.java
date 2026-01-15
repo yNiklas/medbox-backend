@@ -57,8 +57,8 @@ public class MedBoxDispenseSchedulerService {
     }
 
     private void scheduleDispense(String mosMac, String boxMac, int compartmentNumber, DispenseInterval interval) {
-        logger.info("Scheduling dispense for device: {}, box: {}, compartment: {}, interval: from {} UTC every {}ms",
-                mosMac, boxMac, compartmentNumber, interval.getStartTime(), interval.getInterval());
+        logger.info("Scheduling dispense for device: {}, box: {}, compartment: {}, interval: from {} UTC every {}ms; next dispense: {} UTC",
+                mosMac, boxMac, compartmentNumber, interval.getStartTime(), interval.getInterval(), interval.getNextDispenseTime());
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(
                 () -> {
                     if (deviceWebSocketService.isDeviceConnected(mosMac)) {
@@ -71,7 +71,7 @@ public class MedBoxDispenseSchedulerService {
                         logger.warn("Cannot schedule dispense for disconnected device: {}", mosMac);
                     }
                 },
-                interval.getNextDispenseTime(),
+                interval.getNextDispenseTime() - System.currentTimeMillis(),
                 interval.getInterval(),
                 TimeUnit.MILLISECONDS
         );
