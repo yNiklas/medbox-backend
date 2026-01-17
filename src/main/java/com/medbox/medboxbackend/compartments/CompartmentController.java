@@ -2,6 +2,7 @@ package com.medbox.medboxbackend.compartments;
 
 import com.medbox.medboxbackend.compartments.requests.RefillCompartmentRequest;
 import com.medbox.medboxbackend.compartments.requests.RenameCompartmentRequest;
+import com.medbox.medboxbackend.exceptions.NoSuchResourceException;
 import com.medbox.medboxbackend.model.Compartment;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class CompartmentController {
     @GetMapping("/{id}")
     public Compartment getCompartmentById(@PathVariable Long id, Principal principal) {
         return compartmentService.getCompartmentByIdAndUserId(id, principal.getName())
-                .orElseThrow(() -> new IllegalArgumentException("Compartment with id " + id + " not found for user " + principal.getName()));
+                .orElseThrow(() -> new NoSuchResourceException("Compartment with id " + id + " not found for user " + principal.getName()));
     }
 
     @PreAuthorize("isAuthenticated()")

@@ -1,5 +1,6 @@
 package com.medbox.medboxbackend.boxes;
 
+import com.medbox.medboxbackend.exceptions.NoSuchResourceException;
 import com.medbox.medboxbackend.model.MedBox;
 import com.medbox.medboxbackend.model.MedBoxStatus;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class MedBoxService {
     public MedBox renameMedBox(Long id, String newName, String userId) {
         Optional<MedBox> boxOpt = medBoxRepository.findByIdAndUserId(id, userId);
         if (boxOpt.isEmpty()) {
-            throw new IllegalArgumentException("MedBox with id " + id + " not found for user " + userId);
+            throw new NoSuchResourceException("MedBox with id " + id + " not found for user " + userId);
         }
 
         if (Objects.equals(boxOpt.get().getName(), newName)) {
@@ -42,7 +43,7 @@ public class MedBoxService {
     public void deleteMedBox(Long id, String userId) {
         Optional<MedBox> boxOpt = medBoxRepository.findByIdAndUserId(id, userId);
         if (boxOpt.isEmpty()) {
-            throw new IllegalArgumentException("MedBox with id " + id + " not found for user " + userId);
+            throw new NoSuchResourceException("MedBox with id " + id + " not found for user " + userId);
         } else {
             medBoxRepository.delete(boxOpt.get());
         }

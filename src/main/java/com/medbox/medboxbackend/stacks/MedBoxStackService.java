@@ -1,6 +1,7 @@
 package com.medbox.medboxbackend.stacks;
 
 import com.medbox.medboxbackend.boxes.MedBoxService;
+import com.medbox.medboxbackend.exceptions.NoSuchResourceException;
 import com.medbox.medboxbackend.model.MedBox;
 import com.medbox.medboxbackend.model.MedBoxStack;
 import org.springframework.stereotype.Service;
@@ -59,7 +60,7 @@ public class MedBoxStackService {
     public MedBoxStack renameMedBoxStack(Long id, String newName, String userId) {
         Optional<MedBoxStack> stackOpt = medBoxStackRepository.findByIdAndUserId(id, userId);
         if (stackOpt.isEmpty()) {
-            throw new IllegalArgumentException("MedBoxStack with id " + id + " not found for user " + userId);
+            throw new NoSuchResourceException("MedBoxStack with id " + id + " not found for user " + userId);
         }
 
         // Check if new name is already used
@@ -76,7 +77,7 @@ public class MedBoxStackService {
     public void deleteMedBoxStackById(Long id, String userId) {
         Optional<MedBoxStack> stackOpt = medBoxStackRepository.findByIdAndUserId(id, userId);
         if (stackOpt.isEmpty()) {
-            throw new IllegalArgumentException("MedBoxStack with id " + id + " not found for user " + userId);
+            throw new NoSuchResourceException("MedBoxStack with id " + id + " not found for user " + userId);
         } else {
             medBoxStackRepository.delete(stackOpt.get());
         }
@@ -129,7 +130,7 @@ public class MedBoxStackService {
     public MedBox onboardSlaveMedBox(Long stackId, String slaveBoxMac, String slaveBoxName, String userId) {
         Optional<MedBoxStack> stackOpt = medBoxStackRepository.findByIdAndUserId(stackId, userId);
         if (stackOpt.isEmpty()) {
-            throw new IllegalArgumentException("MedBoxStack with id " + stackId + " not found for user " + userId);
+            throw new NoSuchResourceException("MedBoxStack with id " + stackId + " not found for user " + userId);
         }
 
         return stackOpt.get().onboardSlaveMedBox(slaveBoxMac, slaveBoxName);

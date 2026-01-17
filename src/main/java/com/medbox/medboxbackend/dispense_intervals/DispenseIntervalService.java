@@ -3,6 +3,7 @@ package com.medbox.medboxbackend.dispense_intervals;
 import com.medbox.medboxbackend.boxes.MedBoxDispenseSchedulerService;
 import com.medbox.medboxbackend.compartments.CompartmentRepository;
 import com.medbox.medboxbackend.compartments.CompartmentService;
+import com.medbox.medboxbackend.exceptions.NoSuchResourceException;
 import com.medbox.medboxbackend.model.Compartment;
 import com.medbox.medboxbackend.model.DispenseInterval;
 import com.medbox.medboxbackend.model.MedBox;
@@ -28,7 +29,7 @@ public class DispenseIntervalService {
     public void createDispenseInterval(Long compartmentId, long interval, long startTime, int pillsToDispense, String userId) {
         Optional<Compartment> compartmentOpt = compartmentService.getCompartmentByIdAndUserId(compartmentId, userId);
         if (compartmentOpt.isEmpty()) {
-            throw new IllegalArgumentException("Compartment with id " + compartmentId + " not found for user " + userId);
+            throw new NoSuchResourceException("Compartment with id " + compartmentId + " not found for user " + userId);
         }
 
         if (interval <= 0) throw new IllegalArgumentException("Interval must be positive");
@@ -53,7 +54,7 @@ public class DispenseIntervalService {
     public DispenseInterval updateDispenseInterval(Long id, long interval, long startTime, int pillsToDispense, String userId) {
         Optional<DispenseInterval> intervalOpt = dispenseIntervalRepository.findByIdAndUserId(id, userId);
         if (intervalOpt.isEmpty()) {
-            throw new IllegalArgumentException("DispenseInterval with id " + id + " not found for user " + userId);
+            throw new NoSuchResourceException("DispenseInterval with id " + id + " not found for user " + userId);
         }
 
         if (interval <= 0) throw new IllegalArgumentException("Interval must be positive");
@@ -73,7 +74,7 @@ public class DispenseIntervalService {
     public void deleteDispenseInterval(Long id, String userId) {
         Optional<DispenseInterval> intervalOpt = dispenseIntervalRepository.findByIdAndUserId(id, userId);
         if (intervalOpt.isEmpty()) {
-            throw new IllegalArgumentException("DispenseInterval with id " + id + " not found for user " + userId);
+            throw new NoSuchResourceException("DispenseInterval with id " + id + " not found for user " + userId);
         }
         dispenseIntervalRepository.delete(intervalOpt.get());
         medBoxDispenseSchedulerService.removeScheduledDispenseByDispenseIntervalId(id);

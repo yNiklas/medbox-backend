@@ -30,7 +30,7 @@ public class MedBoxStacksController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping
     public MedBoxStack assignMedBoxStackByMasterMACAddress(@RequestBody AssignMedBoxStackRequest request,
-                                                    Principal principal) {
+                                                           Principal principal) {
         return medBoxStackService.assignMedBoxStackByMasterMACAddress(request.masterMACAddress(),
                 request.boxName(), request.stackName(), principal.getName());
     }

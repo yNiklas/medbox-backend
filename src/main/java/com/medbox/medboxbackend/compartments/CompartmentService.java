@@ -1,5 +1,6 @@
 package com.medbox.medboxbackend.compartments;
 
+import com.medbox.medboxbackend.exceptions.NoSuchResourceException;
 import com.medbox.medboxbackend.model.Compartment;
 import com.medbox.medboxbackend.model.MedBox;
 import com.medbox.medboxbackend.model.MedBoxStack;
@@ -31,7 +32,7 @@ public class CompartmentService {
     public Compartment renameCompartment(Long id, String newName, String userId) {
         Optional<Compartment> compartmentOpt = compartmentRepository.findByIdAndUserId(id, userId);
         if (compartmentOpt.isEmpty()) {
-            throw new IllegalArgumentException("Compartment with id " + id + " not found for user " + userId);
+            throw new NoSuchResourceException("Compartment with id " + id + " not found for user " + userId);
         }
 
         if (Objects.equals(compartmentOpt.get().getName(), newName)) {
@@ -51,7 +52,7 @@ public class CompartmentService {
     public void deleteCompartment(Long id, String userId) {
         Optional<Compartment> compartmentOpt = compartmentRepository.findByIdAndUserId(id, userId);
         if (compartmentOpt.isEmpty()) {
-            throw new IllegalArgumentException("Compartment with id " + id + " not found for user " + userId);
+            throw new NoSuchResourceException("Compartment with id " + id + " not found for user " + userId);
         }
         compartmentRepository.delete(compartmentOpt.get());
     }
@@ -59,7 +60,7 @@ public class CompartmentService {
     public Compartment refillCompartment(Long id, int pillsToAdd, String userId) {
         Optional<Compartment> compartmentOpt = compartmentRepository.findByIdAndUserId(id, userId);
         if (compartmentOpt.isEmpty()) {
-            throw new IllegalArgumentException("Compartment with id " + id + " not found for user " + userId);
+            throw new NoSuchResourceException("Compartment with id " + id + " not found for user " + userId);
         }
 
         Compartment compartment = compartmentOpt.get();

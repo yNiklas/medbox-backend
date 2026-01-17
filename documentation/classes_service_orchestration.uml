@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>JAVA</ID>
+  <OriginalElement>G:/Users/nikla/Documents/_code/MexBoxBackend/src/main/java/com/medbox/medboxbackend</OriginalElement>
+  <nodes>
+    <node x="-554.0242914979756" y="266.2874493927125">com.medbox.medboxbackend.boxes.MedBoxController</node>
+    <node x="1184.9190283400808" y="128.15789473684208">com.medbox.medboxbackend.websocket.WebSocketConfig</node>
+    <node x="689.6052631578948" y="-110.4817813765182">com.medbox.medboxbackend.notifications.UserDeviceTokenService</node>
+    <node x="-42.5" y="491.00000000000006">com.medbox.medboxbackend.boxes.MedBoxDispenseSchedulerService</node>
+    <node x="-14.220647773279325" y="679.3562753036438">com.medbox.medboxbackend.boxes.ScheduledBoxDispense</node>
+    <node x="393.5" y="491.0">com.medbox.medboxbackend.compartments.CompartmentService</node>
+    <node x="-552.2591093117408" y="-53.99595141700405">com.medbox.medboxbackend.boxes.MedBoxRepository</node>
+    <node x="943.1194331983808" y="833.3481781376519">com.medbox.medboxbackend.dispense_intervals.DispenseIntervalController</node>
+    <node x="492.9716599190285" y="291.0">com.medbox.medboxbackend.websocket.service.DeviceWebSocketService</node>
+    <node x="-195.71457489878532" y="862.1417004048583">com.medbox.medboxbackend.notifications.FirebaseConfig</node>
+    <node x="357.5" y="893.4777327935223">com.medbox.medboxbackend.compartments.CompartmentRepository</node>
+    <node x="675.6052631578948" y="-230.4817813765182">com.medbox.medboxbackend.notifications.UserDeviceTokenRepository</node>
+    <node x="648.7935222672064" y="706.3036437246964">com.medbox.medboxbackend.dispense_intervals.DispenseIntervalService</node>
+    <node x="1055.5546558704452" y="291.0">com.medbox.medboxbackend.websocket.handler.DeviceWebSocketHandler</node>
+    <node x="-213.69433198380568" y="-53.99595141700405">com.medbox.medboxbackend.stacks.MedBoxStacksController</node>
+    <node x="-463.0" y="111.0">com.medbox.medboxbackend.boxes.MedBoxService</node>
+    <node x="-200.28137651821862" y="266.2874493927125">com.medbox.medboxbackend.stacks.MedBoxStackService</node>
+    <node x="221.5" y="770.748987854251">com.medbox.medboxbackend.compartments.CompartmentController</node>
+    <node x="-440.5485829959514" y="770.748987854251">com.medbox.medboxbackend.exceptions.GlobalExceptionHandler</node>
+    <node x="679.6052631578948" y="9.5182186234818">com.medbox.medboxbackend.notifications.UserDeviceTokenController</node>
+    <node x="534.1052631578948" y="69.5182186234818">com.medbox.medboxbackend.notifications.PushNotificationService</node>
+    <node x="676.8319838056674" y="974.6761133603239">com.medbox.medboxbackend.dispense_intervals.DispenseIntervalRepository</node>
+    <node x="-55.04251012145744" y="-118.47368421052633">com.medbox.medboxbackend.stacks.MedBoxStackRepository</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="com.medbox.medboxbackend.websocket.service.DeviceWebSocketService" target="com.medbox.medboxbackend.stacks.MedBoxStackRepository" relationship="TO_ONE">
+      <point x="-86.86234817813784" y="-16.287449392712517" />
+      <point x="538.1093117408907" y="164.5182186234818" />
+      <point x="76.45748987854256" y="164.5182186234818" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.boxes.MedBoxDispenseSchedulerService" target="com.medbox.medboxbackend.boxes.ScheduledBoxDispense" relationship="TO_MANY">
+      <point x="61.25910931174144" y="16.09311740890695" />
+      <point x="188.25910931174144" y="584.5991902834007" />
+      <point x="188.25910931174144" y="708.3198380566803" />
+      <point x="76.86234817813818" y="13.963562753036513" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.compartments.CompartmentService" target="com.medbox.medboxbackend.websocket.service.DeviceWebSocketService" relationship="TO_ONE">
+      <point x="0.0" y="-15.0" />
+      <point x="507.0" y="353.6761133603239" />
+      <point x="559.5506072874493" y="353.6761133603239" />
+      <point x="-65.42105263157919" y="12.83805668016197" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.notifications.UserDeviceTokenController" target="com.medbox.medboxbackend.notifications.UserDeviceTokenService" relationship="TO_ONE">
+      <point x="51.22672064777339" y="-14.052631578947683" />
+      <point x="850.0323886639678" y="10.465587044534118" />
+      <point x="850.0323886639678" y="-81.32388663967646" />
+      <point x="60.05263157894751" y="14.15789473684174" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.compartments.CompartmentService" target="com.medbox.medboxbackend.compartments.CompartmentRepository" relationship="TO_ONE">
+      <point x="-17.121457489878367" y="11.206477732792905" />
+      <point x="489.87854251012163" y="561.4858299595139" />
+      <point x="489.0" y="561.4858299595139" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.dispense_intervals.DispenseIntervalService" target="com.medbox.medboxbackend.compartments.CompartmentService" relationship="TO_ONE">
+      <point x="69.76113360323905" y="-3.724696356275331" />
+      <point x="843.5546558704455" y="506.0" />
+      <point x="616.089068825911" y="506.0" />
+      <point x="109.089068825911" y="5.133603238866385" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.websocket.service.DeviceWebSocketService" target="com.medbox.medboxbackend.notifications.PushNotificationService" relationship="TO_ONE">
+      <point x="0.0" y="-15.0" />
+      <point x="-34.13360323886627" y="18.291497975708467" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.stacks.MedBoxStackService" target="com.medbox.medboxbackend.stacks.MedBoxStackRepository" relationship="TO_ONE">
+      <point x="0.0" y="-21.0" />
+      <point x="-76.78137651821862" y="226.0" />
+      <point x="76.45748987854256" y="226.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.boxes.MedBoxDispenseSchedulerService" target="com.medbox.medboxbackend.websocket.service.DeviceWebSocketService" relationship="TO_ONE">
+      <point x="84.75" y="-15.0" />
+      <point x="211.75" y="299.83805668016197" />
+      <point x="494.7408906882591" y="299.83805668016197" />
+      <point x="-130.2307692307694" y="7.5425101214574966" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.websocket.handler.DeviceWebSocketHandler" target="com.medbox.medboxbackend.boxes.MedBoxDispenseSchedulerService" relationship="TO_ONE">
+      <point x="0.0" y="-15.0" />
+      <point x="1188.5546558704452" y="446.0" />
+      <point x="274.2145748987855" y="446.0" />
+      <point x="147.2145748987855" y="-17.4453441295546" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.websocket.handler.DeviceWebSocketHandler" target="com.medbox.medboxbackend.websocket.service.DeviceWebSocketService" relationship="TO_ONE">
+      <point x="-130.59919028340073" y="2.246963562753024" />
+      <point x="934.2226720647773" y="308.246963562753" />
+      <point x="934.2226720647773" y="308.246963562753" />
+      <point x="132.902834008097" y="2.246963562753024" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.notifications.UserDeviceTokenService" target="com.medbox.medboxbackend.notifications.UserDeviceTokenRepository" relationship="TO_ONE">
+      <point x="0.0" y="-15.0" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.boxes.MedBoxDispenseSchedulerService" target="com.medbox.medboxbackend.stacks.MedBoxStackService" relationship="TO_ONE">
+      <point x="-133.57085020242914" y="-6.230769230769226" />
+      <point x="-6.570850202429142" y="411.29554655870436" />
+      <point x="-50.25910931174087" y="411.29554655870436" />
+      <point x="-50.25910931174087" y="304.71659919028343" />
+      <point x="28.72874493927128" y="17.429149797570915" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.dispense_intervals.DispenseIntervalController" target="com.medbox.medboxbackend.dispense_intervals.DispenseIntervalService" relationship="TO_ONE">
+      <point x="0.0" y="-15.0" />
+      <point x="1078.6194331983806" y="724.5303643724696" />
+      <point x="122.17813765182188" y="3.226720647773277" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.websocket.handler.DeviceWebSocketHandler" target="com.medbox.medboxbackend.stacks.MedBoxStackService" relationship="TO_ONE">
+      <point x="-71.08502024291488" y="-14.125506072874543" />
+      <point x="1117.4696356275304" y="240.62348178137654" />
+      <point x="21.291497975708523" y="240.62348178137654" />
+      <point x="98.07287449392715" y="-23.55060728744934" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.stacks.MedBoxStacksController" target="com.medbox.medboxbackend.stacks.MedBoxStackService" relationship="TO_ONE">
+      <point x="-48.558704453441294" y="-5.79352226720647" />
+      <point x="-129.75303643724698" y="110.85829959514167" />
+      <point x="-130.5263157894737" y="110.85829959514167" />
+      <point x="-130.5263157894737" y="271.26720647773277" />
+      <point x="62.757085020242926" y="-16.020242914979747" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.dispense_intervals.DispenseIntervalService" target="com.medbox.medboxbackend.compartments.CompartmentRepository" relationship="TO_ONE">
+      <point x="-90.62753036437232" y="16.55060728744877" />
+      <point x="683.1659919028341" y="796.9878542510122" />
+      <point x="549.8785425101214" y="796.9878542510122" />
+      <point x="60.878542510121406" y="9.959514170039824" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.compartments.CompartmentController" target="com.medbox.medboxbackend.compartments.CompartmentService" relationship="TO_ONE">
+      <point x="70.14979757085018" y="-15.323886639676061" />
+      <point x="415.1497975708502" y="650.4615384615385" />
+      <point x="414.85829959514183" y="650.4615384615385" />
+      <point x="-92.14170040485817" y="16.607287449392743" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.stacks.MedBoxStackService" target="com.medbox.medboxbackend.boxes.MedBoxService" relationship="TO_ONE">
+      <point x="-101.51417004048585" y="-17.874493927125457" />
+      <point x="-178.29554655870447" y="206.0" />
+      <point x="-309.80161943319837" y="206.0" />
+      <point x="63.19838056680163" y="16.31983805668017" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.dispense_intervals.DispenseIntervalService" target="com.medbox.medboxbackend.boxes.MedBoxDispenseSchedulerService" relationship="TO_ONE">
+      <point x="0.0" y="-15.0" />
+      <point x="773.7935222672064" y="590.7125506072874" />
+      <point x="257.66801619433204" y="590.7125506072874" />
+      <point x="130.66801619433204" y="12.696356275303629" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.boxes.MedBoxService" target="com.medbox.medboxbackend.boxes.MedBoxRepository" relationship="TO_ONE">
+      <point x="-75.25910931174081" y="-13.153846153846189" />
+      <point x="-448.2591093117408" y="-23.99595141700405" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.notifications.PushNotificationService" target="com.medbox.medboxbackend.notifications.UserDeviceTokenService" relationship="TO_ONE">
+      <point x="0.0" y="-15.0" />
+      <point x="659.1052631578948" y="-62.9817813765182" />
+      <point x="819.1052631578948" y="-62.9817813765182" />
+      <point x="0.0" y="-15.0" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.boxes.MedBoxDispenseSchedulerService" target="com.medbox.medboxbackend.boxes.ScheduledBoxDispense" relationship="CREATE">
+      <point x="-84.36842105263099" y="13.445344129554769" />
+      <point x="42.63157894736901" y="613.8825910931175" />
+      <point x="43.51417004048642" y="613.8825910931175" />
+      <point x="-68.76518218623426" y="13.963562753036513" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.dispense_intervals.DispenseIntervalService" target="com.medbox.medboxbackend.dispense_intervals.DispenseIntervalRepository" relationship="TO_ONE">
+      <point x="42.03846153846098" y="13.020242914979804" />
+      <point x="0.0" y="15.0" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.websocket.WebSocketConfig" target="com.medbox.medboxbackend.websocket.handler.DeviceWebSocketHandler" relationship="TO_ONE">
+      <point x="0.0" y="-15.0" />
+      <point x="1288.9190283400808" y="315.59514170040484" />
+      <point x="-132.70850202429148" y="9.595141700404838" />
+    </edge>
+    <edge source="com.medbox.medboxbackend.boxes.MedBoxController" target="com.medbox.medboxbackend.boxes.MedBoxService" relationship="TO_ONE">
+      <point x="0.0" y="-15.0" />
+      <point x="-450.0242914979756" y="142.8542510121457" />
+      <point x="-77.02429149797564" y="16.85425101214571" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Compact" zoom="1.1330275229357798" showDependencies="true" x="348.8623481781377" y="635.1781376518219" />
+  <SelectedNodes />
+  <Categories />
+  <SCOPE>All</SCOPE>
+  <VISIBILITY>private</VISIBILITY>
+</Diagram>
+
