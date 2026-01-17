@@ -1,0 +1,659 @@
+openapi: 3.1.0
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8081
+  description: Generated server url
+paths:
+  /api/v1/stacks:
+    get:
+      tags:
+      - med-box-stacks-controller
+      summary: Get all MedBox Stacks
+      description: Returns all MedBox Stacks owned by the user
+      operationId: getMedBoxStacks
+      responses:
+        "200":
+          description: MedBox Stacks retrieved successfully
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/MedBoxStack"
+    post:
+      tags:
+      - med-box-stacks-controller
+      summary: Assign MedBox Stack
+      description: Assigns a MedBox Stack by master MAC address
+      operationId: assignMedBoxStackByMasterMACAddress
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AssignMedBoxStackRequest"
+        required: true
+      responses:
+        "200":
+          description: MedBox Stack assigned successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBoxStack"
+        "400":
+          description: MedBox with MAC address is already assigned or stack with name
+            already exists
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBoxStack"
+  /api/v1/stacks/{id}/slave-onboarding:
+    post:
+      tags:
+      - med-box-stacks-controller
+      summary: Onboard Slave MedBox
+      description: Onboards a slave MedBox to the stack
+      operationId: onboardSlaveMedBox
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OnboardSlaveRequest"
+        required: true
+      responses:
+        "200":
+          description: Slave MedBox onboarded successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBox"
+        "404":
+          description: MedBox Stack not found for the user
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBox"
+  /api/v1/notifications/register-token:
+    post:
+      tags:
+      - user-device-token-controller
+      summary: Register device token
+      description: Registers a device token for push notifications
+      operationId: registerDeviceToken
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RegisterDeviceTokenRequest"
+        required: true
+      responses:
+        "200":
+          description: Device token registered successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/UserDeviceToken"
+  /api/v1/dispense-intervals:
+    post:
+      tags:
+      - dispense-interval-controller
+      summary: Create Dispense Interval
+      description: Creates a new dispense interval for a compartment
+      operationId: createDispenseInterval
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateDispenseIntervalRequest"
+        required: true
+      responses:
+        "200":
+          description: Dispense interval created successfully
+        "404":
+          description: Compartment not found for the user
+        "400":
+          description: "Invalid interval, pills to dispense, or start time"
+  /api/v1/stacks/{id}/name:
+    patch:
+      tags:
+      - med-box-stacks-controller
+      summary: Rename MedBox Stack
+      description: Renames the MedBox Stack with the given ID
+      operationId: renameMedBoxStack
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RenameMedBoxStackRequest"
+        required: true
+      responses:
+        "200":
+          description: MedBox Stack renamed successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBoxStack"
+        "404":
+          description: MedBox Stack not found for the user
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBoxStack"
+        "400":
+          description: Stack with the given name already exists
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBoxStack"
+  /api/v1/dispense-intervals/{id}:
+    delete:
+      tags:
+      - dispense-interval-controller
+      summary: Delete Dispense Interval
+      description: Deletes a dispense interval by ID
+      operationId: deleteDispenseIntervalById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Dispense interval deleted successfully
+        "404":
+          description: Dispense interval not found for the user
+    patch:
+      tags:
+      - dispense-interval-controller
+      summary: Update Dispense Interval
+      description: Updates an existing dispense interval
+      operationId: updateDispenseInterval
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateDispenseIntervalRequest"
+        required: true
+      responses:
+        "200":
+          description: Dispense interval updated successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DispenseInterval"
+        "404":
+          description: Dispense interval not found for the user
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DispenseInterval"
+        "400":
+          description: "Invalid interval, pills to dispense, or start time"
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/DispenseInterval"
+  /api/v1/compartments/{id}/refill:
+    patch:
+      tags:
+      - compartment-controller
+      summary: Refill Compartment
+      description: Refills the Compartment with the given ID by adding pills
+      operationId: refillCompartment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefillCompartmentRequest"
+        required: true
+      responses:
+        "200":
+          description: Compartment refilled successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Compartment"
+        "404":
+          description: Compartment not found for the user
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Compartment"
+  /api/v1/compartments/{id}/name:
+    patch:
+      tags:
+      - compartment-controller
+      summary: Rename Compartment
+      description: Renames the Compartment with the given ID
+      operationId: renameCompartment
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RenameCompartmentRequest"
+        required: true
+      responses:
+        "200":
+          description: Compartment renamed successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Compartment"
+        "404":
+          description: Compartment not found for the user
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Compartment"
+        "400":
+          description: Compartment with the given name already exists in the same
+            MedBox
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Compartment"
+  /api/v1/boxes/{id}/name:
+    patch:
+      tags:
+      - med-box-controller
+      summary: Rename MedBox
+      description: Renames the MedBox with the given ID
+      operationId: renameMedBox
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RenameMedBoxRequest"
+        required: true
+      responses:
+        "200":
+          description: MedBox renamed successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBox"
+        "404":
+          description: MedBox not found for the user
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBox"
+        "400":
+          description: A MedBox with the given name already exists in the stack
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBox"
+  /api/v1/stacks/{id}:
+    get:
+      tags:
+      - med-box-stacks-controller
+      summary: Get MedBox Stack by ID
+      description: Returns the MedBox Stack with the given ID
+      operationId: getMedBoxStackById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: MedBox Stack found and returned successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBoxStack"
+        "404":
+          description: MedBox Stack not found for the user
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBoxStack"
+    delete:
+      tags:
+      - med-box-stacks-controller
+      summary: Delete MedBox Stack
+      description: Deletes the MedBox Stack with the given ID
+      operationId: deleteMedBoxStackById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: MedBox Stack deleted successfully
+        "404":
+          description: MedBox Stack not found for the user
+  /api/v1/compartments/{id}:
+    get:
+      tags:
+      - compartment-controller
+      summary: Get Compartment by ID
+      description: Returns the Compartment with the given ID
+      operationId: getCompartmentById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Compartment found and returned successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Compartment"
+        "404":
+          description: Compartment not found for the user
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/Compartment"
+    delete:
+      tags:
+      - compartment-controller
+      summary: Delete Compartment
+      description: Deletes the Compartment with the given ID
+      operationId: deleteCompartmentById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: Compartment deleted successfully
+        "404":
+          description: Compartment not found for the user
+  /api/v1/boxes/{id}:
+    get:
+      tags:
+      - med-box-controller
+      summary: Get MedBox by ID
+      description: Returns the MedBox with the given ID
+      operationId: getMedBoxById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: MedBox found and returned successfully
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBox"
+        "404":
+          description: MedBox not found for the user
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/MedBox"
+    delete:
+      tags:
+      - med-box-controller
+      summary: Delete MedBox
+      description: Deletes the MedBox with the given ID
+      operationId: deleteMedBoxById
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "200":
+          description: MedBox deleted successfully
+        "404":
+          description: MedBox not found for the user
+  /api/v1/notifications/unregister-token:
+    delete:
+      tags:
+      - user-device-token-controller
+      summary: Unregister device token
+      description: Unregisters a device token for push notifications
+      operationId: unregisterDeviceToken
+      parameters:
+      - name: fcmToken
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Device token unregistered successfully
+        "400":
+          description: Token does not belong to the user
+components:
+  schemas:
+    AssignMedBoxStackRequest:
+      type: object
+      properties:
+        masterMACAddress:
+          type: string
+        boxName:
+          type: string
+        stackName:
+          type: string
+    Compartment:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        intervals:
+          type: array
+          items:
+            $ref: "#/components/schemas/DispenseInterval"
+        remainingPills:
+          type: integer
+          format: int32
+        lastDispenseTime:
+          type: integer
+          format: int64
+        potentialErrorMessage:
+          type: string
+        runningOut:
+          type: boolean
+    DispenseInterval:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        interval:
+          type: integer
+          format: int64
+        startTime:
+          type: integer
+          format: int64
+        pillsToDispense:
+          type: integer
+          format: int32
+    MedBox:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        mac:
+          type: string
+        name:
+          type: string
+        status:
+          $ref: "#/components/schemas/MedBoxStatus"
+        compartments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Compartment"
+    MedBoxStack:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        boxes:
+          type: array
+          items:
+            $ref: "#/components/schemas/MedBox"
+        orderChanged:
+          type: boolean
+        danglingMACs:
+          type: object
+          additionalProperties:
+            type: integer
+            format: int32
+        userId:
+          type: string
+        mos:
+          $ref: "#/components/schemas/MedBox"
+    MedBoxStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        lastSeenAt:
+          type: integer
+          format: int64
+        error:
+          type: string
+    OnboardSlaveRequest:
+      type: object
+      properties:
+        boxName:
+          type: string
+        boxMac:
+          type: string
+    RegisterDeviceTokenRequest:
+      type: object
+      properties:
+        fcmToken:
+          type: string
+        deviceType:
+          type: string
+    UserDeviceToken:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: string
+        fcmToken:
+          type: string
+        deviceType:
+          type: string
+        lastUpdated:
+          type: integer
+          format: int64
+    CreateDispenseIntervalRequest:
+      type: object
+      properties:
+        compartmentId:
+          type: integer
+          format: int64
+        interval:
+          type: integer
+          format: int64
+        startTime:
+          type: integer
+          format: int64
+        pillsToDispense:
+          type: integer
+          format: int32
+    RenameMedBoxStackRequest:
+      type: object
+      properties:
+        updatedName:
+          type: string
+    UpdateDispenseIntervalRequest:
+      type: object
+      properties:
+        interval:
+          type: integer
+          format: int64
+        startTime:
+          type: integer
+          format: int64
+        pillsToDispense:
+          type: integer
+          format: int32
+    RefillCompartmentRequest:
+      type: object
+      properties:
+        pillsToAdd:
+          type: integer
+          format: int32
+    RenameCompartmentRequest:
+      type: object
+      properties:
+        updatedName:
+          type: string
+    RenameMedBoxRequest:
+      type: object
+      properties:
+        updatedName:
+          type: string
