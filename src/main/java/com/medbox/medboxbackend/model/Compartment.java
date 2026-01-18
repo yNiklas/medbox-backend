@@ -21,7 +21,7 @@ public class Compartment {
     @Setter
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<DispenseInterval> intervals;
 
     @Setter

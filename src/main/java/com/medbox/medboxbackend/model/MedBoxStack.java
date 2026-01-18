@@ -18,7 +18,7 @@ public class MedBoxStack {
     @Setter
     private String name;
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private List<MedBox> boxes;
 
     boolean orderChanged;
