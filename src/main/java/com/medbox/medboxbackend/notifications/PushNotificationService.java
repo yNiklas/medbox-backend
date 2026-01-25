@@ -19,7 +19,7 @@ public class PushNotificationService {
         this.userDeviceTokenService = userDeviceTokenService;
     }
 
-    public void sendDispenseNotification(String userId, String boxName, int compartmentNumber, int pillsDispensed) {
+    public void sendDispenseNotification(String userId, String boxName, int compartmentPosition, int pillsDispensed) {
         if (FirebaseApp.getApps().isEmpty()) {
             logger.warn("Firebase not initialized. Skipping notification for user: {}", userId);
             return;
@@ -33,8 +33,8 @@ public class PushNotificationService {
         }
 
         String title = "Pill Dispensed";
-        String body = String.format("%d pill(s) dispensed from %s, compartment %d", 
-                                    pillsDispensed, boxName, compartmentNumber + 1);
+        String body = String.format("%d pill(s) dispensed from %s",
+                                    pillsDispensed, boxName);
 
         List<String> invalidTokens = new ArrayList<>();
 
@@ -46,7 +46,7 @@ public class PushNotificationService {
                                 .setBody(body)
                                 .build())
                         .putData("boxName", boxName)
-                        .putData("compartmentNumber", String.valueOf(compartmentNumber + 1))
+                        .putData("compartmentPosition", String.valueOf(compartmentPosition + 1))
                         .putData("pillsDispensed", String.valueOf(pillsDispensed))
                         .setToken(deviceToken.getFcmToken())
                         .build();

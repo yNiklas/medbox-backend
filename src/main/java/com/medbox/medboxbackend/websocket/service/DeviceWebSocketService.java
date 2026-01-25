@@ -47,25 +47,25 @@ public class DeviceWebSocketService {
         return sessions.containsKey(mosMac);
     }
 
-    public void requestDispense(String mosMac, String boxMac, int compartmentNumber, int amountOfPills) throws IOException {
+    public void requestDispense(String mosMac, String boxMac, int compartmentPosition, int amountOfPills) throws IOException {
         WebSocketSession session = sessions.get(mosMac);
         if (session == null || !session.isOpen()) {
             throw new IllegalStateException("Device " + mosMac + " is not connected");
         }
 
-        DispenseRequest dispenseRequest = new DispenseRequest(compartmentNumber, amountOfPills);
+        DispenseRequest dispenseRequest = new DispenseRequest(compartmentPosition, amountOfPills);
         ServerMessage message = new ServerMessage(3, boxMac, dispenseRequest);
         
         String jsonMessage = objectMapper.writeValueAsString(message);
         session.sendMessage(new TextMessage(jsonMessage));
         logger.info("Sent dispense request to device {}: boxMac={}, compartment={}, pills={}", 
-                    mosMac, boxMac, compartmentNumber, amountOfPills);
+                    mosMac, boxMac, compartmentPosition, amountOfPills);
 
         // Send push notification
-        sendDispenseNotification(mosMac, boxMac, compartmentNumber, amountOfPills);
+        sendDispenseNotification(mosMac, boxMac, compartmentPosition, amountOfPills);
     }
 
-    private void sendDispenseNotification(String mosMac, String boxMac, int compartmentNumber, int amountOfPills) {
+    private void sendDispenseNotification(String mosMac, String boxMac, int compartmentPosition, int amountOfPills) {
         try {
             Optional<MedBoxStack> stackOpt = medBoxStackRepository.findMedBoxStackByMedBoxMACAddress(mosMac);
             if (stackOpt.isEmpty()) {
@@ -83,24 +83,24 @@ public class DeviceWebSocketService {
             
             String boxName = boxOpt.map(MedBox::getName).orElse("Unknown Box");
 
-            pushNotificationService.sendDispenseNotification(userId, boxName, compartmentNumber, amountOfPills);
+            pushNotificationService.sendDispenseNotification(userId, boxName, compartmentPosition, amountOfPills);
         } catch (Exception e) {
             logger.error("Failed to send dispense notification: {}", e.getMessage(), e);
         }
     }
 
-    public void requestFunnelSpotChange(String mosMac, String targetBoxMAC, int targetCompartmentNumber) throws IOException {
+    public void requestFunnelSpotChange(String mosMac, String targetBoxMAC, int targetCompartmentPosition) throws IOException {
         WebSocketSession session = sessions.get(mosMac);
         if (session == null || !session.isOpen()) {
             throw new IllegalStateException("Device " + mosMac + " is not connected");
         }
 
-        ChangeFunnelSpotRequest changeFunnelSpotRequest = new ChangeFunnelSpotRequest(targetCompartmentNumber);
+        ChangeFunnelSpotRequest changeFunnelSpotRequest = new ChangeFunnelSpotRequest(targetCompartmentPosition);
         ServerMessage message = new ServerMessage(4, targetBoxMAC, changeFunnelSpotRequest);
 
         String jsonMessage = objectMapper.writeValueAsString(message);
         session.sendMessage(new TextMessage(jsonMessage));
-        logger.info("Sent funnel spot change request to device {}: targetBoxMAC={}, targetCompartmentNumber={}",
-                    mosMac, targetBoxMAC, targetCompartmentNumber);
+        logger.info("Sent funnel spot change request to device {}: targetBoxMAC={}, targetCompartmentPosition={}",
+                    mosMac, targetBoxMAC, targetCompartmentPosition);
     }
 }

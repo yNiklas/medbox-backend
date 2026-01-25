@@ -84,13 +84,13 @@ public class CompartmentService {
             if (mosOpt.isPresent()) {
                 Optional<MedBox> targetBoxOpt = stackOfCompartmentOpt.get().findMedBoxByCompartmentId(id);
                 if (targetBoxOpt.isPresent()) {
-                    Optional<Integer> targetCompartmentNumberOpt = targetBoxOpt.get().getCompartmentNumberById(id);
-                    if (targetCompartmentNumberOpt.isPresent()) {
+                    Optional<Integer> targetCompartmentPositionOpt = targetBoxOpt.get().getCompartmentPositionById(id);
+                    if (targetCompartmentPositionOpt.isPresent()) {
                         try {
                             deviceWebSocketService.requestFunnelSpotChange(
                                     mosOpt.get().getMac(),
                                     targetBoxOpt.get().getMac(),
-                                    targetCompartmentNumberOpt.get()
+                                    targetCompartmentPositionOpt.get()
                             );
                         } catch (IOException e) {
                             logger.error("Failed to send funnel spot change request for compartment id {}", id, e);

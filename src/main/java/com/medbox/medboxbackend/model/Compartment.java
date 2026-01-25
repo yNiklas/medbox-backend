@@ -29,9 +29,12 @@ public class Compartment {
 
     private long lastDispenseTime; // UTC timestamp in milliseconds
 
-    public Compartment(String name) {
+    private int position; // Position index in the actual box
+
+    public Compartment(String name, int position) {
         this.name = name;
         this.intervals = new ArrayList<>(1);
+        this.position = position;
     }
 
     public boolean isRunningOut() {

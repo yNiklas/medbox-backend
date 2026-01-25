@@ -60,14 +60,14 @@ public class MedBoxService {
         medBoxRepository.save(boxOpt.get());
     }
 
-    public void registerDispensedPills(String boxMac, int compartmentNumber, int amountOfPills) {
+    public void registerDispensedPills(String boxMac, int compartmentPosition, int amountOfPills) {
         Optional<MedBox> boxOpt = medBoxRepository.findByMac(boxMac);
         if (boxOpt.isEmpty()) {
             throw new IllegalArgumentException("MedBox with MAC " + boxMac + " not found.");
         }
 
         MedBox box = boxOpt.get();
-        box.registerDispensedPills(compartmentNumber, amountOfPills);
+        box.registerDispensedPills(compartmentPosition, amountOfPills);
 
         medBoxRepository.save(box);
     }

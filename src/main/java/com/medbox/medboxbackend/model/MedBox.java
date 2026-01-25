@@ -30,10 +30,10 @@ public class MedBox {
         this.mac = mac;
         this.name = name;
         this.compartments = List.of(
-                new Compartment("Compartment 1"),
-                new Compartment("Compartment 2"),
-                new Compartment("Compartment 3"),
-                new Compartment("Compartment 4")
+                new Compartment("Compartment 1", 0),
+                new Compartment("Compartment 2", 1),
+                new Compartment("Compartment 3", 2),
+                new Compartment("Compartment 4", 3)
         );
         this.status = new MedBoxStatus(System.currentTimeMillis());
     }
@@ -60,11 +60,10 @@ public class MedBox {
         status.setError("Device disconnected");
     }
 
-    public Optional<Integer> getCompartmentByDispenseIntervalId(Long dispenseIntervalId) {
-        for (int i = 0; i < compartments.size(); i++) {
-            Compartment compartment = compartments.get(i);
+    public Optional<Integer> getCompartmentPositionByDispenseIntervalId(Long dispenseIntervalId) {
+        for (Compartment compartment : compartments) {
             if (compartment.hasIntervalId(dispenseIntervalId)) {
-                return Optional.of(i);
+                return Optional.of(compartment.getPosition());
             }
         }
         return Optional.empty();
@@ -74,20 +73,18 @@ public class MedBox {
         return compartments != null && compartments.stream().anyMatch(c -> c.getId().equals(compartmentId));
     }
 
-    public Optional<Integer> getCompartmentNumberById(Long compartmentId) {
-        for (int i = 0; i < compartments.size(); i++) {
-            Compartment compartment = compartments.get(i);
+    public Optional<Integer> getCompartmentPositionById(Long compartmentId) {
+        for (Compartment compartment : compartments) {
             if (compartment.getId().equals(compartmentId)) {
-                return Optional.of(i);
+                return Optional.of(compartment.getPosition());
             }
         }
         return Optional.empty();
     }
 
-    public void registerDispensedPills(int compartmentNumber, int amountOfPills) {
-        if (compartments != null && compartmentNumber >= 0 && compartmentNumber < compartments.size()) {
-            Compartment compartment = compartments.get(compartmentNumber);
-            compartment.removePills(amountOfPills);
-        }
+    public void registerDispensedPills(int compartmentPosition, int amountOfPills) {
+        if (compartments == null) return;
+        compartments.stream().filter(c -> c.getPosition() == compartmentPosition).findFirst()
+                .ifPresent(c -> c.removePills(amountOfPills));
     }
 }

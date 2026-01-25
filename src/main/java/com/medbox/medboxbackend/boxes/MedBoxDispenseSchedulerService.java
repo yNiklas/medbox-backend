@@ -44,29 +44,28 @@ public class MedBoxDispenseSchedulerService {
 
         boxesOpt.get().forEach(box -> {
             List<Compartment> compartments = box.getCompartments();
-            for (int i = 0; i < compartments.size(); i++) {
-                Compartment compartment = compartments.get(i);
+            for (Compartment compartment : compartments) {
                 for (DispenseInterval interval : compartment.getIntervals()) {
-                    scheduleDispense(mosMac, box.getMac(), i, interval);
+                    scheduleDispense(mosMac, box.getMac(), compartment.getPosition(), interval);
                 }
             }
         });
     }
 
-    public void rescheduleDispenseInterval(String mosMac, String boxMac, int compartmentNumber, DispenseInterval interval) {
+    public void rescheduleDispenseInterval(String mosMac, String boxMac, int compartmentPosition, DispenseInterval interval) {
         removeScheduledDispenseByDispenseIntervalId(interval.getId());
-        scheduleDispense(mosMac, boxMac, compartmentNumber, interval);
+        scheduleDispense(mosMac, boxMac, compartmentPosition, interval);
     }
 
-    private void scheduleDispense(String mosMac, String boxMac, int compartmentNumber, DispenseInterval interval) {
+    private void scheduleDispense(String mosMac, String boxMac, int compartmentPosition, DispenseInterval interval) {
         logger.info("Scheduling dispense for device: {}, box: {}, compartment: {}, interval: from {} UTC every {}ms; next dispense: {} UTC",
-                mosMac, boxMac, compartmentNumber, interval.getStartTime(), interval.getInterval(), interval.getNextDispenseTime());
+                mosMac, boxMac, compartmentPosition, interval.getStartTime(), interval.getInterval(), interval.getNextDispenseTime());
         ScheduledFuture<?> scheduledFuture = scheduler.scheduleAtFixedRate(
                 () -> {
                     if (deviceWebSocketService.isDeviceConnected(mosMac)) {
                         try {
-                            deviceWebSocketService.requestDispense(mosMac, boxMac, compartmentNumber, interval.getPillsToDispense());
-                            medBoxService.registerDispensedPills(boxMac, compartmentNumber, interval.getPillsToDispense());
+                            deviceWebSocketService.requestDispense(mosMac, boxMac, compartmentPosition, interval.getPillsToDispense());
+                            medBoxService.registerDispensedPills(boxMac, compartmentPosition, interval.getPillsToDispense());
                         } catch (Exception e) {
                             logger.error("Error on executing dispense: " + e.getMessage());
                         }
@@ -78,7 +77,7 @@ public class MedBoxDispenseSchedulerService {
                 interval.getInterval(),
                 TimeUnit.MILLISECONDS
         );
-        scheduledBoxDispenses.add(new ScheduledBoxDispense(mosMac, boxMac, compartmentNumber, interval.getId(), scheduledFuture));
+        scheduledBoxDispenses.add(new ScheduledBoxDispense(mosMac, boxMac, compartmentPosition, interval.getId(), scheduledFuture));
     }
 
     public void removeScheduledDispenseByMosMac(String mosMac) {

@@ -89,7 +89,7 @@ public class DispenseIntervalService {
             if (dispenseBoxOpt.isEmpty()) {
                 throw new IllegalStateException("MedBox for DispenseInterval id " + id + " not found in stack");
             }
-            Optional<Integer> compartmentIndexOpt = dispenseBoxOpt.get().getCompartmentByDispenseIntervalId(id);
+            Optional<Integer> compartmentIndexOpt = dispenseBoxOpt.get().getCompartmentPositionByDispenseIntervalId(id);
             if (compartmentIndexOpt.isEmpty()) {
                 throw new IllegalStateException("Compartment for DispenseInterval id " + id + " not found in MedBox " + dispenseBoxOpt.get().getMac());
             }

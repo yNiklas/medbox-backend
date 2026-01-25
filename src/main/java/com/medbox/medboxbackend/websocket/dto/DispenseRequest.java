@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DispenseRequest {
-    @JsonProperty("compartmentNumber")
+    @JsonProperty("compartmentPosition")
     private int compartmentNumber;
     
     @JsonProperty("amountOfPillsToDispense")
