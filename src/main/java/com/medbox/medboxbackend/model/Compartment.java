@@ -85,4 +85,12 @@ public class Compartment {
         if (intervals == null) return false;
         return intervals.stream().anyMatch(interval -> interval.getId().equals(intervalId));
     }
+
+    public void removePills(int amount) {
+        this.remainingPills -= amount;
+        if (this.remainingPills < 0) {
+            this.remainingPills = 0;
+        }
+        this.lastDispenseTime = System.currentTimeMillis();
+    }
 }

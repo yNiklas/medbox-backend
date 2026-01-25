@@ -25,10 +25,12 @@ public class MedBoxDispenseSchedulerService {
     private final MedBoxStackService medBoxStackService;
 
     private final List<ScheduledBoxDispense> scheduledBoxDispenses = new ArrayList<>();
+    private final MedBoxService medBoxService;
 
-    public MedBoxDispenseSchedulerService(DeviceWebSocketService deviceWebSocketService, MedBoxStackService medBoxStackService) {
+    public MedBoxDispenseSchedulerService(DeviceWebSocketService deviceWebSocketService, MedBoxStackService medBoxStackService, MedBoxService medBoxService) {
         this.deviceWebSocketService = deviceWebSocketService;
         this.medBoxStackService = medBoxStackService;
+        this.medBoxService = medBoxService;
     }
 
     public void reScheduleStack(String mosMac) {
@@ -64,6 +66,7 @@ public class MedBoxDispenseSchedulerService {
                     if (deviceWebSocketService.isDeviceConnected(mosMac)) {
                         try {
                             deviceWebSocketService.requestDispense(mosMac, boxMac, compartmentNumber, interval.getPillsToDispense());
+                            medBoxService.registerDispensedPills(boxMac, compartmentNumber, interval.getPillsToDispense());
                         } catch (Exception e) {
                             logger.error("Error on executing dispense: " + e.getMessage());
                         }

@@ -55,6 +55,7 @@ public class PushNotificationService {
                 logger.info("Successfully sent notification to user {}: {}", userId, response);
             } catch (FirebaseMessagingException e) {
                 logger.error("Failed to send notification to user {}: {}", userId, e.getMessage());
+                e.printStackTrace();
                 
                 // If the token is invalid or not registered, mark for removal
                 if (e.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT ||

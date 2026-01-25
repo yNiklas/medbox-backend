@@ -83,4 +83,11 @@ public class MedBox {
         }
         return Optional.empty();
     }
+
+    public void registerDispensedPills(int compartmentNumber, int amountOfPills) {
+        if (compartments != null && compartmentNumber >= 0 && compartmentNumber < compartments.size()) {
+            Compartment compartment = compartments.get(compartmentNumber);
+            compartment.removePills(amountOfPills);
+        }
+    }
 }
