@@ -2,8 +2,10 @@ package com.medbox.medboxbackend.boxes;
 
 import com.medbox.medboxbackend.boxes.requests.RenameMedBoxRequest;
 import com.medbox.medboxbackend.boxes.requests.UpdateMedBoxLocationRequest;
+import com.medbox.medboxbackend.boxes.requests.UpdateMedBoxRobotRequest;
 import com.medbox.medboxbackend.exceptions.NoSuchResourceException;
 import com.medbox.medboxbackend.model.MedBox;
+import com.medbox.medboxbackend.robots.RobotService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -18,10 +20,12 @@ import java.util.List;
 public class MedBoxController {
     private final MedBoxService medBoxService;
     private final LocationService locationService;
+    private final RobotService robotService;
 
-    public MedBoxController(MedBoxService medBoxService, LocationService locationService) {
+    public MedBoxController(MedBoxService medBoxService, LocationService locationService, RobotService robotService) {
         this.medBoxService = medBoxService;
         this.locationService = locationService;
+        this.robotService = robotService;
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -77,5 +81,25 @@ public class MedBoxController {
     @ApiResponse(responseCode = "200", description = "List of available locations returned successfully")
     public List<String> getAvailableLocations() {
         return locationService.getAvailableLocations();
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PatchMapping("/{id}/robot")
+    @Operation(summary = "Update MedBox Robot", description = "Updates the robot name of the MedBox with the given ID")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "MedBox robot updated successfully"),
+            @ApiResponse(responseCode = "404", description = "MedBox not found for the user"),
+            @ApiResponse(responseCode = "400", description = "Invalid robot")
+    })
+    public MedBox updateMedBoxRobot(@PathVariable Long id, @RequestBody UpdateMedBoxRobotRequest request, Principal principal) {
+        return medBoxService.updateMedBoxRobot(id, request.robot(), principal.getName());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/robots")
+    @Operation(summary = "Get Available Robots", description = "Returns the list of available robots")
+    @ApiResponse(responseCode = "200", description = "List of available robots returned successfully")
+    public List<String> getAvailableRobots() {
+        return robotService.getAllConfiguredRobots();
     }
 }

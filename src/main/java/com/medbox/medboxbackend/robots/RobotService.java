@@ -105,6 +105,14 @@ public class RobotService {
         return new ArrayList<>(activeConnections.keySet());
     }
 
+    public List<String> getAllConfiguredRobots() {
+        return new ArrayList<>(robotWebsockets.keySet());
+    }
+
+    public boolean isValidRobot(String robotName) {
+        return robotName != null && robotWebsockets.containsKey(robotName);
+    }
+
     public boolean isRobotConnected(String robotName) {
         RobotWebSocketClient client = activeConnections.get(robotName);
         return client != null && client.isOpen();

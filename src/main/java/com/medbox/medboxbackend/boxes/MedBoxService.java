@@ -3,6 +3,7 @@ package com.medbox.medboxbackend.boxes;
 import com.medbox.medboxbackend.exceptions.NoSuchResourceException;
 import com.medbox.medboxbackend.model.MedBox;
 import com.medbox.medboxbackend.model.MedBoxStatus;
+import com.medbox.medboxbackend.robots.RobotService;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
@@ -12,10 +13,12 @@ import java.util.Optional;
 public class MedBoxService {
     private final MedBoxRepository medBoxRepository;
     private final LocationService locationService;
+    private final RobotService robotService;
 
-    public MedBoxService(MedBoxRepository medBoxRepository, LocationService locationService) {
+    public MedBoxService(MedBoxRepository medBoxRepository, LocationService locationService, RobotService robotService) {
         this.medBoxRepository = medBoxRepository;
         this.locationService = locationService;
+        this.robotService = robotService;
     }
 
     public Optional<MedBox> getMedBoxByIdAndUserId(Long id, String userId) {
@@ -63,6 +66,22 @@ public class MedBoxService {
 
         MedBox box = boxOpt.get();
         box.setLocation(location);
+
+        return medBoxRepository.save(box);
+    }
+
+    public MedBox updateMedBoxRobot(Long id, String robot, String userId) {
+        Optional<MedBox> boxOpt = medBoxRepository.findByIdAndUserId(id, userId);
+        if (boxOpt.isEmpty()) {
+            throw new NoSuchResourceException("MedBox with id " + id + " not found for user " + userId);
+        }
+
+        if (!robotService.isValidRobot(robot)) {
+            throw new IllegalArgumentException("Invalid robot: " + robot + ". Robot not found in available robots.");
+        }
+
+        MedBox box = boxOpt.get();
+        box.setRobot(robot);
 
         return medBoxRepository.save(box);
     }

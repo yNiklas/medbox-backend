@@ -23,6 +23,9 @@ public class MedBox {
     @Setter
     private String location;
 
+    @Setter
+    private String robot;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private MedBoxStatus status;
 
