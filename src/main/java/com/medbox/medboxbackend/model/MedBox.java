@@ -20,6 +20,9 @@ public class MedBox {
     @Setter
     private String name;
 
+    @Setter
+    private String location;
+
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.EAGER)
     private MedBoxStatus status;
 

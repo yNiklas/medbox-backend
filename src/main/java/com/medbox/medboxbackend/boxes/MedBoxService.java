@@ -11,9 +11,11 @@ import java.util.Optional;
 @Service
 public class MedBoxService {
     private final MedBoxRepository medBoxRepository;
+    private final LocationService locationService;
 
-    public MedBoxService(MedBoxRepository medBoxRepository) {
+    public MedBoxService(MedBoxRepository medBoxRepository, LocationService locationService) {
         this.medBoxRepository = medBoxRepository;
+        this.locationService = locationService;
     }
 
     public Optional<MedBox> getMedBoxByIdAndUserId(Long id, String userId) {
@@ -47,6 +49,22 @@ public class MedBoxService {
         } else {
             medBoxRepository.delete(boxOpt.get());
         }
+    }
+
+    public MedBox updateMedBoxLocation(Long id, String location, String userId) {
+        Optional<MedBox> boxOpt = medBoxRepository.findByIdAndUserId(id, userId);
+        if (boxOpt.isEmpty()) {
+            throw new NoSuchResourceException("MedBox with id " + id + " not found for user " + userId);
+        }
+
+        if (!locationService.isValidLocation(location)) {
+            throw new IllegalArgumentException("Invalid location: " + location + ". Location not found in available locations.");
+        }
+
+        MedBox box = boxOpt.get();
+        box.setLocation(location);
+
+        return medBoxRepository.save(box);
     }
 
     public void registerMedBoxError(String mac, String error) {
