@@ -11,6 +11,7 @@ import java.util.Map;
 public class RobotWebSocketClient extends WebSocketClient {
     private final String robotName;
     private final ObjectMapper objectMapper;
+    private RobotPoseCallback poseCallback;
 
     public RobotWebSocketClient(URI serverUri, String robotName) {
         super(serverUri);
@@ -21,11 +22,42 @@ public class RobotWebSocketClient extends WebSocketClient {
     @Override
     public void onOpen(ServerHandshake handshakedata) {
         System.out.println("Connected to robot: " + robotName);
+        subscribeToAmclPose();
     }
 
     @Override
     public void onMessage(String message) {
         System.out.println("Message from " + robotName + ": " + message);
+        try {
+            Map<String, Object> parsedMessage = objectMapper.readValue(message, Map.class);
+            String topic = (String) parsedMessage.get("topic");
+            
+            if ("/amcl_pose".equals(topic) && poseCallback != null) {
+                Map<String, Object> msg = (Map<String, Object>) parsedMessage.get("msg");
+                RobotPoseWithCovariance pose = objectMapper.convertValue(msg, RobotPoseWithCovariance.class);
+                poseCallback.onPoseUpdate(pose);
+            }
+        } catch (Exception e) {
+            System.err.println("Error parsing message from " + robotName + ": " + e.getMessage());
+        }
+    }
+
+    private void subscribeToAmclPose() {
+        try {
+            Map<String, Object> subscribeMessage = new HashMap<>();
+            subscribeMessage.put("op", "subscribe");
+            subscribeMessage.put("topic", "/amcl_pose");
+            
+            String jsonMessage = objectMapper.writeValueAsString(subscribeMessage);
+            this.send(jsonMessage);
+            System.out.println("Subscribed to /amcl_pose on " + robotName);
+        } catch (Exception e) {
+            System.err.println("Error subscribing to /amcl_pose on " + robotName + ": " + e.getMessage());
+        }
+    }
+
+    public void setPoseCallback(RobotPoseCallback callback) {
+        this.poseCallback = callback;
     }
 
     @Override

@@ -20,34 +20,49 @@ public class PushNotificationService {
     }
 
     public void sendDispenseNotification(String userId, String boxName, int compartmentPosition, int pillsDispensed) {
+        String title = "Pill Dispensed";
+        String body = String.format("%d pill(s) dispensed from %s",
+                pillsDispensed, boxName);
+        Message.Builder messageBuilder = Message.builder()
+                .setNotification(Notification.builder()
+                        .setTitle(title)
+                        .setBody(body)
+                        .build())
+                .putData("boxName", boxName)
+                .putData("compartmentPosition", String.valueOf(compartmentPosition + 1))
+                .putData("pillsDispensed", String.valueOf(pillsDispensed));
+
+        sendNotification(userId, messageBuilder);
+    }
+
+    public void sendNotification(String userId, String title, String body) {
+        Message.Builder messageBuilder = Message.builder()
+                .setNotification(Notification.builder()
+                        .setTitle(title)
+                        .setBody(body)
+                        .build());
+
+        sendNotification(userId, messageBuilder);
+    }
+
+    private void sendNotification(String userId, Message.Builder messageBuilder) {
         if (FirebaseApp.getApps().isEmpty()) {
             logger.warn("Firebase not initialized. Skipping notification for user: {}", userId);
             return;
         }
 
         List<UserDeviceToken> deviceTokens = userDeviceTokenService.getUserDeviceTokens(userId);
-        
+
         if (deviceTokens.isEmpty()) {
             logger.debug("No device tokens found for user: {}", userId);
             return;
         }
 
-        String title = "Pill Dispensed";
-        String body = String.format("%d pill(s) dispensed from %s",
-                                    pillsDispensed, boxName);
-
         List<String> invalidTokens = new ArrayList<>();
 
         for (UserDeviceToken deviceToken : deviceTokens) {
             try {
-                Message message = Message.builder()
-                        .setNotification(Notification.builder()
-                                .setTitle(title)
-                                .setBody(body)
-                                .build())
-                        .putData("boxName", boxName)
-                        .putData("compartmentPosition", String.valueOf(compartmentPosition + 1))
-                        .putData("pillsDispensed", String.valueOf(pillsDispensed))
+                Message message = messageBuilder
                         .setToken(deviceToken.getFcmToken())
                         .build();
 
@@ -56,10 +71,10 @@ public class PushNotificationService {
             } catch (FirebaseMessagingException e) {
                 logger.error("Failed to send notification to user {}: {}", userId, e.getMessage());
                 e.printStackTrace();
-                
+
                 // If the token is invalid or not registered, mark for removal
                 if (e.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT ||
-                    e.getMessagingErrorCode() == MessagingErrorCode.UNREGISTERED) {
+                        e.getMessagingErrorCode() == MessagingErrorCode.UNREGISTERED) {
                     invalidTokens.add(deviceToken.getFcmToken());
                 }
             }

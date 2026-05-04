@@ -12,12 +12,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class RobotService {
+    private static final double PROXIMITY_THRESHOLD = 2.0; // meters
+    private static final long ROBOT_ARRIVAL_TIMEOUT = 600_000; // 10 minutes in milliseconds
+    
     private final Map<String, String> robotWebsockets;
     private final Map<String, RobotWebSocketClient> activeConnections;
+    private final Map<String, RobotPoseWithCovariance> robotCurrentPoses;
 
     public RobotService() {
         this.robotWebsockets = loadRobotsFromJson();
         this.activeConnections = new ConcurrentHashMap<>();
+        this.robotCurrentPoses = new ConcurrentHashMap<>();
     }
 
     @PostConstruct
@@ -35,6 +40,7 @@ public class RobotService {
 
     private void connectToRobot(String robotName, String websocketUrl) throws Exception {
         RobotWebSocketClient client = new RobotWebSocketClient(new URI(websocketUrl), robotName);
+        client.setPoseCallback(pose -> robotCurrentPoses.put(robotName, pose));
         client.connect();
         activeConnections.put(robotName, client);
     }
@@ -58,6 +64,35 @@ public class RobotService {
 
         PoseStamped goal = createPoseStamped(x, y, z, yaw);
         client.sendMessage(goal);
+    }
+
+    public boolean waitForRobotAtLocation(String robotName, double targetX, double targetY, double targetZ) throws InterruptedException {
+        long startTime = System.currentTimeMillis();
+        long timeout = ROBOT_ARRIVAL_TIMEOUT;
+        
+        while (System.currentTimeMillis() - startTime < timeout) {
+            RobotPoseWithCovariance currentPose = robotCurrentPoses.get(robotName);
+            if (currentPose != null && isRobotAtLocation(currentPose, targetX, targetY, targetZ)) {
+                System.out.println("Robot " + robotName + " arrived at location (" + targetX + ", " + targetY + ", " + targetZ + ")");
+                return true;
+            }
+            Thread.sleep(100); // Check every 100ms
+        }
+        
+        System.err.println("Robot " + robotName + " did not arrive at location within timeout");
+        return false;
+    }
+
+    private boolean isRobotAtLocation(RobotPoseWithCovariance pose, double targetX, double targetY, double targetZ) {
+        if (pose == null || pose.pose == null || pose.pose.pose == null || pose.pose.pose.position == null) {
+            return false;
+        }
+        
+        RobotPoseWithCovariance.Position robotPos = pose.pose.pose.position;
+        RobotPoseWithCovariance.Position targetPos = new RobotPoseWithCovariance.Position(targetX, targetY, targetZ);
+        double distance = robotPos.distanceTo(targetPos);
+        
+        return distance <= PROXIMITY_THRESHOLD;
     }
 
     private PoseStamped createPoseStamped(double x, double y, double z, double yaw) {
