@@ -83,16 +83,18 @@ public class MedBoxDispenseSchedulerService {
     }
 
     private void executeDispense(String mosMac, String boxMac, int compartmentPosition, DispenseInterval interval) {
-        if (!deviceWebSocketService.isDeviceConnected(mosMac)) {
-            logger.warn("Cannot execute dispense for disconnected device: {}", mosMac);
-            return;
-        }
-
         Optional<MedBoxStack> stackOpt = medBoxStackRepository.findMedBoxStackByMedBoxMACAddress(mosMac);
         if (stackOpt.isEmpty()) {
             logger.error("MedBoxStack with MOS MAC {} not found", mosMac);
             return;
         }
+
+        if (!deviceWebSocketService.isDeviceConnected(mosMac)) {
+            logger.warn("Cannot execute dispense for disconnected device: {}", mosMac);
+            pushNotificationService.sendNotification(stackOpt.get().getUserId(), "Dispense failed","Device " + mosMac + " is not connected. Dispense for box " + boxMac + " skipped.");
+            return;
+        }
+
         Optional<MedBox> boxOpt = stackOpt.get().getBoxes().stream().filter(box -> box.getMac().equals(boxMac)).findFirst();
         if (boxOpt.isEmpty()) {
             logger.error("MedBox with MAC {} not found in stack {}", boxMac, mosMac);
